@@ -25,7 +25,12 @@ class TeleopGamepad(Node):
         
         velocity = Twist()
         velocity.linear.x = round(j.get_axis(1), 2) #Left thumbstick Y
-        velocity.linear.y = round(j.get_axis(2), 2) #Right thumbstick X     
+        velocity.linear.y = 0.0
+        velocity.linear.z = 0.0
+        
+        velocity.angular.x = 0.0
+        velocity.angular.y = 0.0
+        velocity.angular.z = round(j.get_axis(2), 2) #Right thumbstick X     
         
         print("Throttle:", velocity.linear.x)
         print("Steering:", velocity.linear.y) 
