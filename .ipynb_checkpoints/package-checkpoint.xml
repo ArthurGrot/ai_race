@@ -7,8 +7,8 @@
 
   <license>Apache License 2.0</license>
 
-  <author>Arthur Grot</author>
-
+  <author email="art.grot.19@lehre.dhbw.mosbach.de">Arthur Grot</author>
+  <maintainer email="art.grot.19@lehre.dhbw.mosbach.de">Arthur Grot</maintainer>
   <exec_depend>example_interfaces</exec_depend>
   <exec_depend>rclpy</exec_depend>
 

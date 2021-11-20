@@ -63,7 +63,7 @@ RUN source ${ROS_ENVIRONMENT} && \
 # setup entrypoint
 #
 
-RUN echo 'source ${ROS_ROOT}/install/setup.bash' >> /root/.bashrc && \
+RUN echo 'source ${WORKSPACE_ROOT}/install/setup.bash' >> /root/.bashrc && \
     echo 'source ${WORKSPACE_ROOT}/install/local_setup.bash' >> /root/.bashrc
 
 
