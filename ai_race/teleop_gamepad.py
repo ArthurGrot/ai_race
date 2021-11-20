@@ -32,8 +32,8 @@ class TeleopGamepad(Node):
         velocity.angular.y = 0.0
         velocity.angular.z = round(j.get_axis(2), 2) #Right thumbstick X     
         
-        print("Throttle:", velocity.linear.x)
-        print("Steering:", velocity.linear.y) 
+        #self.get_logger().info(f"Throttle: {velocity.linear.x}")
+        #self.get_logger().info(f"Steering: {velocity.linear.y}") 
         
         self.pub_velocity.publish(velocity)
         
@@ -43,10 +43,13 @@ def main(args=None):
 
     teleop_gamepad = TeleopGamepad()
 
-    rclpy.spin(teleop_gamepad)
-    
-    teleop_gamepad.destroy_node()
-    rclpy.shutdown()
+    try:
+        rclpy.spin(teleop_gamepad)
+    except KeyboardInterrupt:
+        teleop_gamepad.get_logger().info("node stopped by keyboard interrupt")
+    finally:        
+        teleop_gamepad.destroy_node()
+        rclpy.shutdown()
 
 
 if __name__ == '__main__':
