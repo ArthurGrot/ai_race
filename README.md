@@ -7,4 +7,5 @@ commands:
     sudo docker build -t ai_race .
     sudo docker run -it --privileged ai_race
     
-    ros2 run ai_race teleop_gamepad
+    ros2 launch ai_race launch_jetbot.launch.py
+    
