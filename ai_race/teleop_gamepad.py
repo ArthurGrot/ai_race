@@ -17,22 +17,24 @@ class TeleopGamepad(Node):
         self.pub_throttle = self.create_publisher(Float32, 'throttle', 10)
         self.pub_steering = self.create_publisher(Float32, 'steering', 10)
         
-        timer_period = 0.5  # seconds
+        timer_period = 0.1  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
 
     def timer_callback(self):
         pygame.event.pump()
         
-        throttle = j.get_axis(1) #Left thumbstick Y
-        steering = j.get_axis(2) #Right thumbstick X
+        throttle = Float32()
+        throttle.data = j.get_axis(1) #Left thumbstick Y
+        steering = Float32()
+        steering.data = j.get_axis(2) #Right thumbstick X        
+        
+        print("Throttle:", throttle.data)
+        print("Steering:", steering.data) 
         
         self.pub_throttle.publish(throttle)
         self.pub_steering.publish(steering)
         
-        print("Throttle:", throttle)
-        print("Steering:", steering)   
         
-
 def main(args=None):
     rclpy.init(args=args)
 
