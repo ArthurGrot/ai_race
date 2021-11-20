@@ -43,7 +43,8 @@ WORKDIR /tmp
 # JetBot hw controllers
 #
 RUN pip3 install Adafruit-MotorHAT Adafruit-SSD1306 --verbose
-RUN pip3 install pygame
+RUN pip3 install setuptools traitlets getkey
+RUN pip3 install pygame==1.9.6
 
 #
 # environment setup
