@@ -24,9 +24,9 @@ class TeleopGamepad(Node):
         pygame.event.pump()
         
         throttle = Float32()
-        throttle.data = j.get_axis(1) #Left thumbstick Y
+        throttle.data = round(j.get_axis(1), 2) #Left thumbstick Y
         steering = Float32()
-        steering.data = j.get_axis(2) #Right thumbstick X        
+        steering.data = round(j.get_axis(2), 2) #Right thumbstick X        
         
         print("Throttle:", throttle.data)
         print("Steering:", steering.data) 
