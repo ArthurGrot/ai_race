@@ -17,7 +17,23 @@ RUN apt-get clean && \
     apt-get install -y \
                 locales \
                 python3.8 \
-                python3-pip
+                python3-pip \
+                python3-yaml \
+                libsdl1.2-dev \
+                python-dev \
+                libsdl-image1.2-dev \
+                libsdl-mixer1.2-dev \
+                libsdl-ttf2.0-dev \
+                libsdl1.2-dev \
+                libsmpeg-dev \
+                python-numpy \
+                subversion \
+                libportmidi-dev \
+                ffmpeg \
+                libswscale-dev \
+                libavformat-dev \
+                libavcodec-dev \
+                libfreetype6-dev
     
 RUN locale-gen en_US en_US.UTF-8 && update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 
@@ -27,6 +43,7 @@ WORKDIR /tmp
 # JetBot hw controllers
 #
 RUN pip3 install Adafruit-MotorHAT Adafruit-SSD1306 --verbose
+RUN pip3 install pygame
 
 #
 # environment setup

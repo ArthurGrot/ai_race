@@ -26,11 +26,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'client = ' + package_name + '.client:main',
-            'client_cancel = ' + package_name + '.client_cancel:main',
-            'client_not_composable = ' + package_name + '.client_not_composable:main',
-            'teleop = ' + package_name + '.teleop:main',
-            'racecar = ' + package_name + '.racecar:main',
+            'teleop_gamepad = ' + package_name + '.teleop_gamepad:main'
         ],
     },
 )
