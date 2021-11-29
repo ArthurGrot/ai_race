@@ -9,7 +9,7 @@ from Adafruit_MotorHAT import Adafruit_MotorHAT
 MOTOR_LEFT = 1      # left motor ID
 MOTOR_RIGHT = 2     # right motor ID
 
-class MotorControllerWaveshare(Node):
+class MotorJetbot(Node):
     
     def __init__(self):
         super().__init__('motors')
@@ -136,7 +136,7 @@ class MotorControllerWaveshare(Node):
 def main(args=None):
     rclpy.init(args=args)
 
-    node = MotorControllerWaveshare()
+    node = MotorJetbot()
     node.get_logger().info("listening for velocity messages...")
     
     try:
