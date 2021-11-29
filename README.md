@@ -15,7 +15,7 @@ for jetracer (launching jetracer takes longer than jetbot):
 
     ros2 launch ai_race launch_jetracer.launch.py
     
-calibration in a new bash:
+calibration in a new bash (WARNING! Calibration has to be redone after restart):
 
 for jetracer steering:
 
@@ -24,3 +24,4 @@ for jetracer steering:
 for jetracer speed:
 
     ros2 param set /ai_race/ai_race_motor throttle_gain <value between 0.0 and 1.0>
+
