@@ -32,6 +32,7 @@ setup(
             'teleop_gamepad = ' + package_name + '.teleop_gamepad:main',
             'motor_jetbot = ' + package_name + '.motor_jetbot:main',
             'motor_jetracer = ' + package_name + '.motor_jetracer:main',
+            'display = ' + package_name + '.display:main',
         ],
     },
 )

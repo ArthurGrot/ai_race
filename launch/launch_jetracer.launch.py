@@ -15,4 +15,11 @@ def generate_launch_description():
             executable='motor_jetracer',
             name='ai_race_motor'
         )
+        # ,
+        # Node(
+        #     package='ai_race',
+        #     namespace='ai_race',
+        #     executable='display',
+        #     name='ai_race_display'
+        # )
     ])

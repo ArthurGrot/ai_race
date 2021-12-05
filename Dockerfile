@@ -29,6 +29,8 @@ WORKDIR /tmp
 RUN pip3 install Jetson.GPIO adafruit-circuitpython-servokit Adafruit-MotorHAT Adafruit-SSD1306 --verbose
 RUN pip3 install setuptools traitlets getkey
 RUN pip3 install pygame
+RUN pip3 install pillow
+RUN pip3 install requests
 
 #
 # environment setup
