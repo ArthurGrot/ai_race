@@ -11,6 +11,11 @@
   <maintainer email="art.grot.19@lehre.dhbw.mosbach.de">Arthur Grot</maintainer>
   <exec_depend>example_interfaces</exec_depend>
   <exec_depend>rclpy</exec_depend>
+  <depend>image_transport</depend>
+  <depend>cv_bridge</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>opencv2</depend>
 
   <!-- These test dependencies are optional
   Their purpose is to make sure that the code passes the linters -->

@@ -33,6 +33,8 @@ setup(
             'motor_jetbot = ' + package_name + '.motor_jetbot:main',
             'motor_jetracer = ' + package_name + '.motor_jetracer:main',
             'display = ' + package_name + '.display:main',
+            'camera_pub = ' + package_name + '.camera_pub:main',
+            'camera_sub = ' + package_name + '.camera_sub:main',
         ],
     },
 )

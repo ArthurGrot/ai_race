@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=ros
+ARG BASE_IMAGE=dustynv/ros:foxy-ros-base-l4t-r32.6.1
 FROM ${BASE_IMAGE}
 
 SHELL ["/bin/bash", "-c"] 
@@ -17,8 +17,9 @@ RUN apt-get clean && \
     apt-get install -y \
                 locales \
                 python3.8 \
-                python3-pip
-    
+                python3-pip \
+                ros-${ROS_DISTRO}-cv-bridge         
+
 RUN locale-gen en_US en_US.UTF-8 && update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 
 WORKDIR /tmp    
@@ -31,6 +32,7 @@ RUN pip3 install setuptools traitlets getkey
 RUN pip3 install pygame
 RUN pip3 install pillow
 RUN pip3 install requests
+RUN pip3 install opencv-python
 
 #
 # environment setup
