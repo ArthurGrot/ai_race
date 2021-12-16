@@ -39,7 +39,7 @@ RUN apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-t
 RUN pip3 install pygame --verbose
 
 RUN pip3 install scikit-build 
-RUN pip3 install opencv-python
+
 #
 # environment setup
 #   
