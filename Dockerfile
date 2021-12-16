@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=dustynv/ros:foxy-ros-base-l4t-r32.6.1
+ARG BASE_IMAGE=dustynv/ros:foxy-ros-base-l4t-r32.5.0
 FROM ${BASE_IMAGE}
 
 SHELL ["/bin/bash", "-c"] 
@@ -16,9 +16,12 @@ RUN apt-get clean && \
     apt-get update && \
     apt-get install -y \
                 locales \
-                python3.8 \
-                python3-pip \
-                ros-${ROS_DISTRO}-cv-bridge         
+                python3-pip 
+
+RUN apt-get install -y python3-opencv
+                
+
+#RUN apt-get upgrade -y && rosdep update -y       
 
 RUN locale-gen en_US en_US.UTF-8 && update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 
@@ -29,17 +32,21 @@ WORKDIR /tmp
 #
 RUN pip3 install Jetson.GPIO adafruit-circuitpython-servokit Adafruit-MotorHAT Adafruit-SSD1306 --verbose
 RUN pip3 install setuptools traitlets getkey
-RUN pip3 install pygame
 RUN pip3 install pillow
 RUN pip3 install requests
-RUN pip3 install opencv-python
 
+RUN apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libfreetype6-dev libportmidi-dev libjpeg-dev python3-setuptools python3-dev python3-numpy
+RUN pip3 install pygame --verbose
+
+RUN pip3 install scikit-build 
+RUN pip3 install opencv-python
 #
 # environment setup
 #   
 ENV WORKSPACE_ROOT=/workspace
 ENV JETBOT_ROOT=${WORKSPACE_ROOT}/src/ai_race
 ARG ROS_ENVIRONMENT=/opt/ros/${ROS_DISTRO}/setup.bash
+ARG ROS_ENVIRONMENT_INSTALL=/opt/ros/${ROS_DISTRO}/install/setup.bash
 
 # setup workspace
 WORKDIR ${WORKSPACE_ROOT}
@@ -60,7 +67,7 @@ COPY package.xml ${JETBOT_ROOT}
 COPY setup.py ${JETBOT_ROOT}
 COPY setup.cfg ${JETBOT_ROOT}
     
-RUN source ${ROS_ENVIRONMENT} && \
+RUN source ${ROS_ENVIRONMENT_INSTALL} && \
     cd ${WORKSPACE_ROOT} && \
     colcon build --symlink-install
 
