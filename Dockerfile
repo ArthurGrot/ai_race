@@ -40,6 +40,8 @@ RUN pip3 install pygame --verbose
 
 RUN pip3 install scikit-build 
 
+RUN pip3 install flask
+
 #
 # environment setup
 #   
