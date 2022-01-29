@@ -16,6 +16,7 @@ class ImageSubscriber(Node):
     def __init__(self):
         super().__init__('image_subscriber')
 
+        #example for subscription 
         self.subscription = self.create_subscription(
             Image,
             'video_frames',
@@ -27,7 +28,7 @@ class ImageSubscriber(Node):
         self.frame = None
 
     def listener_callback(self, data):
-        self.get_logger().info('Receiving video frame')
+        #self.get_logger().info('Receiving video frame')
         cv_image = self.br.imgmsg_to_cv2(data, desired_encoding="passthrough")
 
         self.frame = cv2.imencode(".jpg", cv_image)[1].tobytes()

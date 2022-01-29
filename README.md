@@ -25,3 +25,7 @@ for jetracer speed:
 
     ros2 param set /ai_race/ai_race_motor throttle_gain <value between 0.0 and 1.0>
 
+connect to container in new terminal:
+
+    sudo docker ps
+    sudo docker exec -it NAME bash
