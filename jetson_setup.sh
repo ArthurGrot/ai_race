@@ -8,11 +8,14 @@ echo "[FINISHED] update & upgrade"
 echo "[START] install v4l-utils"
 sudo apt install -y v4l-utils
 echo "[FINISHED] install v4l-utils"
-echo "[START] downgrade docker"
-sudo apt install -y containerd=1.5.2-0ubuntu1~18.04.3
-sudo apt install -y docker.io=19.03.6-0ubuntu1~18.04.3
-sudo apt-mark hold docker.io containerd
-echo "[FINISHED] downgrade docker"
+echo "[START] nvidia docker update"
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
+   && curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add - \
+   && curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+
+sudo apt-get update
+sudo apt-get install -y nvidia-docker2=2.8.0-1
+echo "[FINISHED] nvidia docker update"
 echo "[START] download docker base image"
 sudo docker pull dustynv/ros:foxy-ros-base-l4t-r32.5.0
 echo "[FINISHED] download docker base image"
