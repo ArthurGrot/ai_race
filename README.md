@@ -29,3 +29,12 @@ connect to container in new terminal:
 
     sudo docker ps
     sudo docker exec -it NAME bash
+
+
+https://github.com/NVIDIA-AI-IOT/ros2_torch_trt/tree/master/docker
+
+https://forums.developer.nvidia.com/t/pytorch-for-jetson-version-1-10-now-available/72048
+
+cp /workspace/build/ai_race/ai_race/road_following_model30a.pth /workspace/install/ai_race/lib/ai_race/road_following_model30a.pth
+
+ros2 launch ai_race jetracer_line_following.launch.py

@@ -42,6 +42,30 @@ RUN pip3 install scikit-build
 
 RUN pip3 install flask
 
+#RUN pip3 install torch torchvision -f https://torch.kmtea.eu/whl/stable.html
+
+ARG PYTORCH_URL=https://nvidia.box.com/shared/static/fjtbno0vpo676a25cgvuqc1wty0fkkg6.whl
+ARG PYTORCH_WHL=torch-1.10.0-cp36-cp36m-linux_aarch64.whl
+
+RUN wget --quiet --show-progress --progress=bar:force:noscroll --no-check-certificate ${PYTORCH_URL} -O ${PYTORCH_WHL} && \
+    pip3 install --no-cache-dir --verbose ${PYTORCH_WHL} && \
+    rm ${PYTORCH_WHL}
+
+RUN apt-get install libjpeg-dev zlib1g-dev libpython3-dev libavcodec-dev libavformat-dev libswscale-dev
+
+RUN apt-get install -y libopenblas-base libopenmpi-dev 
+
+RUN pip3 install Cython
+
+RUN pip3 install --no-cache-dir ninja
+
+RUN git clone -b release/0.11 https://github.com/pytorch/vision torchvision && \
+    cd torchvision && \
+    export BUILD_VERSION=0.11.0 && \
+    python3 setup.py install && \
+    cd ../ && \
+    rm -rf torchvision
+
 #
 # environment setup
 #   
@@ -71,7 +95,7 @@ COPY setup.cfg ${JETBOT_ROOT}
     
 RUN source ${ROS_ENVIRONMENT_INSTALL} && \
     cd ${WORKSPACE_ROOT} && \
-    colcon build --symlink-install
+    colcon build --symlink-install --packages-select ai_race
 
 
 #
