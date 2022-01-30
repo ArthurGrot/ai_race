@@ -11,4 +11,4 @@ sudo nvidia-docker run \
     -e DISPLAY=$DISPLAY \
     -it \
     --privileged \
-    ai_race
+    ai_race_build

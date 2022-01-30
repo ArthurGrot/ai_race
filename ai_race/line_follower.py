@@ -7,6 +7,9 @@ import cv2
 from rclpy.node import Node
 import torchvision
 import torch
+import torchvision.transforms as transforms
+
+
 
 class ImagePublisher(Node):
 
@@ -31,6 +34,8 @@ class ImagePublisher(Node):
         self.model = self.model.eval().half()
         self.get_logger().info(f'4')
 
+        self.transform = transforms.ToTensor()
+
         self.bridge = cv_bridge.CvBridge()
         self.cmd_vel_pub = self.create_publisher(Twist, 'velocity', 10)
         self.image_pub = self.create_publisher(
@@ -47,7 +52,8 @@ class ImagePublisher(Node):
     def image_callback(self, msg):
         self.get_logger().info(f'6')
         image = self.bridge.imgmsg_to_cv2(msg, desired_encoding="passthrough")
-        output = self.model(image).detach().cpu().numpy().flatten()
+        tensor = self.transform(image)
+        output = self.model(tensor).detach().cpu().numpy().flatten()
         self.get_logger().info(output)
         steering = float(output[0])
 

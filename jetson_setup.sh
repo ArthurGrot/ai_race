@@ -16,6 +16,10 @@ distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
 sudo apt-get update
 sudo apt-get install -y nvidia-docker2=2.8.0-1
 echo "[FINISHED] nvidia docker update"
+echo "[START] modify docker configuration"
+sudo cp daemon.json /etc/docker/daemon.json 
+sudo systemctl restart docker
+echo "[FINISHED] modify docker configuration"
 echo "[START] download docker base image"
 sudo docker pull dustynv/ros:foxy-ros-base-l4t-r32.5.0
 echo "[FINISHED] download docker base image"

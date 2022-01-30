@@ -1,0 +1,47 @@
+ARG BASE_IMAGE=ai_race_base:latest
+FROM ${BASE_IMAGE}
+
+SHELL ["/bin/bash", "-c"] 
+ENV SHELL /bin/bash
+
+#
+# environment setup
+#   
+ENV WORKSPACE_ROOT=/workspace
+ENV JETBOT_ROOT=${WORKSPACE_ROOT}/src/ai_race
+ARG ROS_ENVIRONMENT=/opt/ros/${ROS_DISTRO}/setup.bash
+ARG ROS_ENVIRONMENT_INSTALL=/opt/ros/${ROS_DISTRO}/install/setup.bash
+
+# setup workspace
+WORKDIR ${WORKSPACE_ROOT}
+RUN mkdir -p ${WORKSPACE_ROOT}/src
+
+#COPY scripts/setup_workspace.sh ${WORKSPACE_ROOT}/setup_workspace.sh
+ENV PYTHONPATH="${JETBOT_ROOT}:${PYTHONPATH}"
+
+
+#
+# build project
+#
+COPY ai_race ${JETBOT_ROOT}/ai_race
+COPY launch ${JETBOT_ROOT}/launch
+COPY resource ${JETBOT_ROOT}/resource
+
+COPY package.xml ${JETBOT_ROOT}
+COPY setup.py ${JETBOT_ROOT}
+COPY setup.cfg ${JETBOT_ROOT}
+    
+RUN source ${ROS_ENVIRONMENT_INSTALL} && \
+    cd ${WORKSPACE_ROOT} && \
+    colcon build --symlink-install --packages-select ai_race
+
+
+#
+# setup entrypoint
+#
+
+RUN echo 'source ${WORKSPACE_ROOT}/install/setup.bash' >> /root/.bashrc && \
+    echo 'source ${WORKSPACE_ROOT}/install/local_setup.bash' >> /root/.bashrc
+
+
+CMD ["bash"]
