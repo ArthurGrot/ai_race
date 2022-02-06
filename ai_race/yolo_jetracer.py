@@ -34,6 +34,8 @@ class ImageSubscriberYolo(Node):
 
         self.frame = cv2.imencode(".jpg", cv_image)[1].tobytes()
         self.res = self.model(self.frame,size=640)
+        self.get_logger().info(f'Detected: {self.res.pandas().xyxy[0]}')
+
         event.set()
 
 def get_frame():
@@ -63,7 +65,6 @@ def runApp():
 
 
 def main(args=None):
-
     t1 = threading.Thread(target=runApp).start()
 
 
