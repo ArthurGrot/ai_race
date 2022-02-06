@@ -52,8 +52,8 @@ class ImagePublisher(Node):
     def image_callback(self, msg):
         self.get_logger().info(f'6')
         image = self.bridge.imgmsg_to_cv2(msg, desired_encoding="passthrough")
-        tensor = self.transform(image)
-        output = self.model(tensor).detach().cpu().numpy().flatten()
+        torch_ex_float_tensor = torch.from_numpy(image)
+        output = self.model(torch_ex_float_tensor).detach().cpu().numpy().flatten()
         self.get_logger().info(output)
         steering = float(output[0])
 

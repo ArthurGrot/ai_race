@@ -4,14 +4,22 @@ commands:
 
     git clone https://github.com/Radtour/ai_race
     cd ai_race
-    sudo docker build -t ai_race .
-    sudo docker run -it --privileged ai_race
+    . jetson_setup.sh
+    . docker_run.sh
     
-for jetbot:
+manually build dependencies image:
+
+    sudo docker build -f  Dockerfile.ai_race_base -t ai_race_base .
+
+manually build development image:
+
+    sudo docker build -f  Dockerfile.ai_race_build -t ai_race_build .
+
+for jetbot remote controlling:
 
     ros2 launch ai_race launch_jetbot.launch.py
 
-for jetracer (launching jetracer takes longer than jetbot): 
+for jetracer remote controlling (launching jetracer takes longer than jetbot): 
 
     ros2 launch ai_race launch_jetracer.launch.py
     
