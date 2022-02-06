@@ -14,8 +14,8 @@ image_subscriber_yolo = None
 class ImageSubscriberYolo(Node):
     def __init__(self):
         super().__init__('image_subscriber_yolo')
-
-        self.model = torch.hub.load('yolov5/', 'custom', path='/home/jetson/AD_AIRACE_YOLO/yolov5/runs/train/exp19/weights/best.pt', source='local') # local repo
+        # '/workspace/src/ai_race/ai_race/models/road_following_model30a.pth'
+        self.model = torch.hub.load('/workspace/src/ai_race/ai_race/yolov5/', 'custom', path='/workspace/src/ai_race/ai_race/models/yolov5Detection.pt', source='local') # local repo
         self.model.cuda()
 
         #example for subscription 
