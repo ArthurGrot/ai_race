@@ -24,7 +24,10 @@ echo "[START] download docker base image"
 sudo docker pull dustynv/ros:foxy-ros-base-l4t-r32.5.0
 echo "[FINISHED] download docker base image"
 echo "[INFO] setup finished"
-echo "[START] build docker image"
-sudo docker build -t ai_race .
-echo "[FINISHED] build docker image"
+echo "[START] build docker base image"
+sudo docker build -f  Dockerfile.ai_race_base -t ai_race_base .
+echo "[FINISHED] build docker base image"
+echo "[START] build docker build image"
+sudo docker build -f  Dockerfile.ai_race_build -t ai_race_build .
+echo "[FINISHED] build docker build image"
 echo "[INFO] continue by running docker_run.sh"
