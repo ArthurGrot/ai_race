@@ -17,7 +17,7 @@ class MotorJetracer(Node):
         self.declare_parameter('throttle', 0.0)
         self.declare_parameter('steering_gain', 0.8)
         self.declare_parameter('steering_offset', 0.15)
-        self.declare_parameter('throttle_gain', 0.3)
+        self.declare_parameter('throttle_gain', 0.23)
         
         self.steering = self.get_parameter('steering').value
         self.throttle = self.get_parameter('throttle').value

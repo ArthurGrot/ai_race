@@ -8,8 +8,12 @@ from rclpy.node import Node
 import torchvision
 import torch
 import torchvision.transforms as transforms
+import torch.nn.functional as F
+import PIL.Image
 
 
+mean = torch.Tensor([0.485, 0.456, 0.406]).cuda()
+std = torch.Tensor([0.229, 0.224, 0.225]).cuda()
 
 class ImagePublisher(Node):
 
@@ -26,13 +30,9 @@ class ImagePublisher(Node):
         self.model = torchvision.models.resnet18(pretrained=False)
         self.model.fc = torch.nn.Linear(512, 2)
         self.model.load_state_dict(torch.load('/workspace/src/ai_race/ai_race/models/road_following_model30a.pth'))
-        self.get_logger().info(f'1')
         self.device = torch.device('cuda')
-        self.get_logger().info(f'2')
         self.model = self.model.to(self.device)
-        self.get_logger().info(f'3')
         self.model = self.model.eval().half()
-        self.get_logger().info(f'4')
 
         self.transform = transforms.ToTensor()
 
@@ -46,19 +46,17 @@ class ImagePublisher(Node):
             self.image_callback,
             10)
 
-        self.get_logger().info(f'5')
         self.twist = Twist()
 
     def image_callback(self, msg):
-        self.get_logger().info(f'6')
         image = self.bridge.imgmsg_to_cv2(msg, desired_encoding="passthrough")
-        torch_ex_float_tensor = torch.from_numpy(image)
+        torch_ex_float_tensor = self.preprocess(image).half()
+        self.get_logger().info(f'')
         output = self.model(torch_ex_float_tensor).detach().cpu().numpy().flatten()
-        self.get_logger().info(output)
         steering = float(output[0])
 
         velocity = Twist()
-        velocity.linear.x = 0.2
+        velocity.linear.x = -0.8
         velocity.linear.y = 0.0
         velocity.linear.z = 0.0
 
@@ -69,6 +67,13 @@ class ImagePublisher(Node):
         self.cmd_vel_pub.publish(velocity)
 
         #self.image_pub.publish(self.bridge.cv2_to_imgmsg(mask))
+
+    def preprocess(self, image):
+        device = torch.device('cuda')
+        image = PIL.Image.fromarray(image)
+        image = transforms.functional.to_tensor(image).to(device)
+        image.sub_(mean[:, None, None]).div_(std[:, None, None])
+        return image[None, ...]
 
 
 def main(args=None):
