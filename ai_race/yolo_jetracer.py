@@ -30,10 +30,9 @@ class ImageSubscriberYolo(Node):
         self.frame = None
 
     def listener_callback(self, data):
-        cv_image = self.br.imgmsg_to_cv2(data, desired_encoding="passthrough")
+        self.cv_image = self.br.imgmsg_to_cv2(data, desired_encoding="passthrough")
 
-        self.frame = cv2.imencode(".jpg", cv_image)[1].tobytes()
-        self.res = self.model(self.frame,size=640)
+        self.res = self.model(self.cv_image,size=640)
         self.get_logger().info(f'Detected: {self.res.pandas().xyxy[0]}')
 
         event.set()
@@ -65,7 +64,7 @@ def runApp():
 
 
 def main(args=None):
-    t1 = threading.Thread(target=runApp).start()
+    runApp()
 
 
 if __name__ == '__main__':

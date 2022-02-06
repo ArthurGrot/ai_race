@@ -34,8 +34,7 @@ RUN pip3 install Jetson.GPIO adafruit-circuitpython-servokit Adafruit-MotorHAT A
 RUN pip3 install setuptools traitlets getkey
 RUN pip3 install pillow
 RUN pip3 install requests
-
-RUN apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libfreetype6-dev libportmidi-dev libjpeg-dev python3-setuptools python3-dev python3-numpy
+RUN apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libfreetype6-dev libportmidi-dev libjpeg-dev python3-setuptools python3-dev python3-numpy g++
 RUN pip3 install pygame --verbose
 
 RUN pip3 install scikit-build 
@@ -73,3 +72,7 @@ RUN pip3 install pandas
 RUN pip3 install numpy==1.19.4
 RUN pip3 install matplotlib
 RUN pip3 install seaborn
+RUN pip3 install thop
+
+RUN pip3 uninstall pillow -y
+RUN pip3 install --no-cache-dir pillow
