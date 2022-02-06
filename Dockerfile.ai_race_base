@@ -71,5 +71,5 @@ RUN pip3 install tqdm
 RUN pip3 install tensorboard 
 RUN pip3 install pandas 
 RUN pip3 install numpy==1.19.4
-RUN apt-get install -y python3-matplotlib
-RUN apt-get install -y python3-seaborn
+RUN pip3 install matplotlib
+RUN pip3 install seaborn
