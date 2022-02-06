@@ -36,7 +36,7 @@ setup(
             'camera_pub = ' + package_name + '.camera_pub:main',
             'camera_sub = ' + package_name + '.camera_sub:main',
             'line_follower = ' + package_name + '.line_follower:main',
-            'yolo_jetracer = ' + package_name * '.yolo_jetracer:main',
+            'yolo_jetracer = ' + package_name + '.yolo_jetracer:main',
         ],
     },
 )
