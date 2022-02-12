@@ -11,7 +11,7 @@ class MotorJetracer(Node):
     def __init__(self):
         super().__init__('motors')
         
-        self.sub = self.create_subscription(Twist, 'velocity', self.twist_listener, 10)
+        self.sub = self.create_subscription(Twist, 'velocity', self.twist_listener, 1)
         
         self.declare_parameter('steering', 0.0)
         self.declare_parameter('throttle', 0.0)

@@ -1,6 +1,6 @@
 echo "[INFO] entering setup"
 echo "[START] configure power mode"
-sudo nvpmodel -m1
+ sudo nvpmodel -m 0
 echo "[FINISHED] configure power mode"
 echo "[START] update & upgrade"
 sudo apt-get update

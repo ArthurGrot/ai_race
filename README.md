@@ -48,3 +48,6 @@ https://stackoverflow.com/questions/59691207/docker-build-with-nvidia-runtime/61
 cp /workspace/build/ai_race/ai_race/road_following_model30a.pth /workspace/install/ai_race/lib/ai_race/road_following_model30a.pth
 
 ros2 launch ai_race jetracer_line_following.launch.py
+
+https://www.seeedstudio.com/blog/2020/07/09/monitor-gpu-cpu-and-other-stats-on-jetson-nano-xavier-nx-tx1-tx2/
+https://askubuntu.com/questions/114997/how-where-do-i-check-my-ubuntu-laptopss-cpu-usage

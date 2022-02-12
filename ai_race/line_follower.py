@@ -35,14 +35,14 @@ class ImagePublisher(Node):
         self.model = self.model.eval().half()
 
         self.bridge = cv_bridge.CvBridge()
-        self.cmd_vel_pub = self.create_publisher(Twist, 'velocity', 10)
+        self.cmd_vel_pub = self.create_publisher(Twist, 'velocity', 1)
         # self.image_pub = self.create_publisher(
         #     Image, 'video_frames_line_follower', 10)
         self.image_sub = self.create_subscription(
             Image,
             'video_frames',
             self.image_callback,
-            10)
+            1)
 
         self.twist = Twist()
 
