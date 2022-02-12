@@ -29,17 +29,15 @@ class ImagePublisher(Node):
 
         self.model = torchvision.models.resnet18(pretrained=False)
         self.model.fc = torch.nn.Linear(512, 2)
-        self.model.load_state_dict(torch.load('/workspace/src/ai_race/ai_race/models/road_following_model30a.pth'))
+        self.model.load_state_dict(torch.load('/workspace/src/ai_race/ai_race/models/road_following_model_2.0_30a.pth'))
         self.device = torch.device('cuda')
         self.model = self.model.to(self.device)
         self.model = self.model.eval().half()
 
-        self.transform = transforms.ToTensor()
-
         self.bridge = cv_bridge.CvBridge()
         self.cmd_vel_pub = self.create_publisher(Twist, 'velocity', 10)
-        self.image_pub = self.create_publisher(
-            Image, 'video_frames_line_follower', 10)
+        # self.image_pub = self.create_publisher(
+        #     Image, 'video_frames_line_follower', 10)
         self.image_sub = self.create_subscription(
             Image,
             'video_frames',
@@ -51,27 +49,19 @@ class ImagePublisher(Node):
     def image_callback(self, msg):
         image = self.bridge.imgmsg_to_cv2(msg, desired_encoding="passthrough")
         torch_ex_float_tensor = self.preprocess(image).half()
-        self.get_logger().info(f'')
         output = self.model(torch_ex_float_tensor).detach().cpu().numpy().flatten()
-        steering = float(output[0])
 
         velocity = Twist()
         velocity.linear.x = -0.8
-        velocity.linear.y = 0.0
-        velocity.linear.z = 0.0
-
-        velocity.angular.x = 0.0
-        velocity.angular.y = 0.0
-        velocity.angular.z = steering  
+        velocity.angular.z = float(output[0])  
 
         self.cmd_vel_pub.publish(velocity)
 
         #self.image_pub.publish(self.bridge.cv2_to_imgmsg(mask))
 
     def preprocess(self, image):
-        device = torch.device('cuda')
         image = PIL.Image.fromarray(image)
-        image = transforms.functional.to_tensor(image).to(device)
+        image = transforms.functional.to_tensor(image).to(self.device)
         image.sub_(mean[:, None, None]).div_(std[:, None, None])
         return image[None, ...]
 

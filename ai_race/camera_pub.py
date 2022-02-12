@@ -8,9 +8,9 @@ import cv2
 class ImagePublisher(Node):
 
     capture_device = 0
-    capture_fps = 30
-    capture_width = 640
-    capture_height = 480
+    capture_fps = 10
+    capture_width = 224
+    capture_height = 224
     width = 224
     height = 224
 
