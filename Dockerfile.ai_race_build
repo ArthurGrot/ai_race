@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=ai_race_base:latest
+ARG BASE_IMAGE=ai_race_test:latest
 FROM ${BASE_IMAGE}
 
 SHELL ["/bin/bash", "-c"] 
