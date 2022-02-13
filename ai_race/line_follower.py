@@ -10,7 +10,7 @@ import torch
 import torchvision.transforms as transforms
 import torch.nn.functional as F
 import PIL.Image
-
+from datetime import datetime
 
 mean = torch.Tensor([0.485, 0.456, 0.406]).cuda()
 std = torch.Tensor([0.229, 0.224, 0.225]).cuda()
@@ -36,28 +36,23 @@ class ImagePublisher(Node):
 
         self.bridge = cv_bridge.CvBridge()
         self.cmd_vel_pub = self.create_publisher(Twist, 'velocity', 1)
-        # self.image_pub = self.create_publisher(
-        #     Image, 'video_frames_line_follower', 10)
-        self.image_sub = self.create_subscription(
-            Image,
-            'video_frames',
-            self.image_callback,
-            1)
+        self.image_sub = self.create_subscription(Image, 'video_frames', self.image_callback, 1)
 
         self.twist = Twist()
+
+        self.get_logger().info(f'Init finished')
 
     def image_callback(self, msg):
         image = self.bridge.imgmsg_to_cv2(msg, desired_encoding="passthrough")
         torch_ex_float_tensor = self.preprocess(image).half()
         output = self.model(torch_ex_float_tensor).detach().cpu().numpy().flatten()
-
+        
         velocity = Twist()
         velocity.linear.x = -0.8
         velocity.angular.z = float(output[0])  
 
         self.cmd_vel_pub.publish(velocity)
-
-        #self.image_pub.publish(self.bridge.cv2_to_imgmsg(mask))
+        self.get_logger().info(f'Position estimated')
 
     def preprocess(self, image):
         image = PIL.Image.fromarray(image)
