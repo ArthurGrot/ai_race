@@ -48,7 +48,6 @@ def main(args=None):
     rclpy.spin(image_publisher)
 
     #disposing
-    cap.release()
     image_publisher.destroy_node()
     rclpy.shutdown()
 
