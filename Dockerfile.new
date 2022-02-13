@@ -1,0 +1,4 @@
+ARG BASE_IMAGE=dustynv/ros:foxy-pytorch-l4t-r32.5.0
+FROM ${BASE_IMAGE}
+
+RUN pip3 install Jetson.GPIO adafruit-circuitpython-servokit

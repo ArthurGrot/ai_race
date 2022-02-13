@@ -12,4 +12,4 @@ sudo nvidia-docker run \
     -it \
     --privileged \
     --name ai_race \
-    ai_race_build
+    ai_race
