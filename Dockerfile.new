@@ -4,6 +4,8 @@ FROM ${BASE_IMAGE}
 RUN apt-get clean && \
     apt-get update
 
+RUN pip3 install --upgrade pip
+
 # Install motor libraries
 RUN pip3 install Jetson.GPIO \
                     Adafruit-PlatformDetect==3.19.4 \
@@ -33,3 +35,46 @@ RUN pip3 install pygame
 # Flask support
 
 RUN pip3 install flask
+
+# Yolo support
+
+# RUN pip3 install matplotlib \
+#                     numpy \
+#                     Pillow \
+#                     requests \
+#                     scipy \
+#                     tqdm \
+#                     tensorboard \
+#                     pandas \
+#                     seaborn \
+#                     thop \
+#                     --upgrade
+
+RUN apt-get install libjpeg-dev zlib1g-dev libpython3-dev libavcodec-dev libavformat-dev libswscale-dev g++
+
+RUN apt-get install -y libopenblas-base libopenmpi-dev 
+
+RUN pip3 install Cython
+
+RUN pip3 install --no-cache-dir ninja
+
+# RUN git clone -b release/0.11 https://github.com/pytorch/vision torchvision && \
+#     cd torchvision && \
+#     export BUILD_VERSION=0.11.0 && \
+#     python3 setup.py install && \
+#     cd ../ && \
+#     rm -rf torchvision
+
+RUN pip3 install --upgrade pip
+
+RUN pip3 install scipy 
+RUN pip3 install tqdm 
+RUN pip3 install tensorboard 
+RUN pip3 install pandas 
+RUN pip3 install numpy==1.19.4
+RUN pip3 install matplotlib
+RUN pip3 install seaborn
+RUN pip3 install thop
+
+RUN pip3 uninstall pillow -y
+RUN pip3 install --no-cache-dir pillow

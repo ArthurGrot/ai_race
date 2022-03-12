@@ -9,7 +9,7 @@ from datetime import datetime
 class ImagePublisher(Node):
 
     capture_device = 0
-    capture_fps = 30
+    capture_fps = 5
     capture_width = 640
     capture_height = 480
     width = 224
