@@ -3,6 +3,7 @@ FROM ${BASE_IMAGE}
 
 # Install motor libraries #
 RUN pip3 install Jetson.GPIO \
+                    Adafruit-PlatformDetect==3.19.4 \
                     adafruit-circuitpython-servokit==1.3.6 \
                     Adafruit-Blinka==6.15.0 \
                     adafruit-circuitpython-busdevice==5.1.1 \ 
