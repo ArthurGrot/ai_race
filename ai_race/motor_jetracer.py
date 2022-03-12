@@ -65,8 +65,6 @@ class MotorJetracer(Node):
         self.last_x = x
         self.last_rot = rot
 
-        self.get_logger().info(f"x={x:.03f} rotation={rot:.03f}")
-
         if x < -1.0:
             x = -1.0
         elif x > 1.0:

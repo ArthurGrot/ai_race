@@ -24,7 +24,7 @@ class TeleopGamepad(Node):
         
         
         velocity = Twist()
-        velocity.linear.x = round(j.get_axis(1), 2) #Left thumbstick Y
+        velocity.linear.x = round(j.get_axis(1), 2) / 2 #Left thumbstick Y
         velocity.linear.y = 0.0
         velocity.linear.z = 0.0
         
