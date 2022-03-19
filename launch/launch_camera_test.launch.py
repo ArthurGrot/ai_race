@@ -13,7 +13,7 @@ def generate_launch_description():
         Node(
             package='ai_race',
             namespace='ai_race',
-            executable='camera_sub',
+            executable='flask_server',
             name='ai_race_camera_sub'
         )
     ])

@@ -14,7 +14,25 @@ def generate_launch_description():
             namespace='ai_race',
             executable='motor_jetracer',
             name='ai_race_motor'
-        )
+        ),
+        Node(
+            package='ai_race',
+            namespace='ai_race',
+            executable='camera_pub',
+            name='ai_race_camera_pub'
+        ),
+        Node(
+            package='ai_race',
+            namespace='ai_race',
+            executable='flask_server',
+            name='ai_race_flask_server'
+        ),
+        # Node(
+        #     package='ai_race',
+        #     namespace='ai_race',
+        #     executable='line_follower',
+        #     name='ai_race_line_follower'
+        # )
         # ,
         # Node(
         #     package='ai_race',
