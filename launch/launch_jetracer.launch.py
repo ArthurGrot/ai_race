@@ -27,12 +27,12 @@ def generate_launch_description():
             executable='flask_server',
             name='ai_race_flask_server'
         ),
-        # Node(
-        #     package='ai_race',
-        #     namespace='ai_race',
-        #     executable='line_follower',
-        #     name='ai_race_line_follower'
-        # )
+        Node(
+            package='ai_race',
+            namespace='ai_race',
+            executable='line_follower',
+            name='ai_race_line_follower'
+        )
         # ,
         # Node(
         #     package='ai_race',
