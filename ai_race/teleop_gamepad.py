@@ -27,19 +27,20 @@ class TeleopGamepad(Node):
     def timer_callback(self):
         pygame.event.pump()
         
-        velocity = Twist()
-        velocity.linear.x = round(j.get_axis(1), 2) / 2 #Left thumbstick Y
-        velocity.linear.y = 0.0
-        velocity.linear.z = 0.0
-        
-        velocity.angular.x = 0.0
-        velocity.angular.y = 0.0
-        velocity.angular.z = round(j.get_axis(2), 2) #Right thumbstick X     
-        
-        #self.get_logger().info(f"Throttle: {velocity.linear.x}")
-        #self.get_logger().info(f"Steering: {velocity.linear.y}") 
-        
-        self.pub_velocity.publish(velocity)
+        if self.line_following_mode.data == False:
+            velocity = Twist()
+            velocity.linear.x = round(j.get_axis(1), 2) / 2 #Left thumbstick Y
+            velocity.linear.y = 0.0
+            velocity.linear.z = 0.0
+            
+            velocity.angular.x = 0.0
+            velocity.angular.y = 0.0
+            velocity.angular.z = round(j.get_axis(2), 2) #Right thumbstick X     
+            
+            #self.get_logger().info(f"Throttle: {velocity.linear.x}")
+            #self.get_logger().info(f"Steering: {velocity.linear.y}") 
+            
+            self.pub_velocity.publish(velocity)
 
 
         for event in pygame.event.get(): 
