@@ -58,11 +58,11 @@ class ImagePublisher(Node):
             self.cmd_vel_pub.publish(velocity)
         
     def image_callback(self, msg):
-        if self.line_following_mode.data == True:
-            image = self.bridge.imgmsg_to_cv2(msg, desired_encoding="passthrough")
-            torch_ex_float_tensor = self.preprocess(image).half()
-            output = self.model(torch_ex_float_tensor).detach().cpu().numpy().flatten()
+        image = self.bridge.imgmsg_to_cv2(msg, desired_encoding="passthrough")
+        torch_ex_float_tensor = self.preprocess(image).half()
+        output = self.model(torch_ex_float_tensor).detach().cpu().numpy().flatten()
             
+        if self.line_following_mode.data == True:
             velocity = Twist()
             velocity.linear.x = float(-0.4)
             velocity.angular.z = float(output[0])  
