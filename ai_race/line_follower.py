@@ -64,7 +64,7 @@ class ImagePublisher(Node):
             output = self.model(torch_ex_float_tensor).detach().cpu().numpy().flatten()
             
             velocity = Twist()
-            velocity.linear.x = float(-0.8)
+            velocity.linear.x = float(-0.4)
             velocity.angular.z = float(output[0])  
 
             self.cmd_vel_pub.publish(velocity)
