@@ -14,7 +14,7 @@ image_subscriber = None
 
 class ImageSubscriber(Node):
     def __init__(self):
-        super().__init__('image_subscriber')
+        super().__init__('flask_server')
 
         #example for subscription 
         self.subscription = self.create_subscription(
