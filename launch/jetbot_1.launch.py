@@ -32,5 +32,11 @@ def generate_launch_description():
             namespace='ai_race_jetbot_1',
             executable='line_follower',
             name='ai_race_line_follower'
+        ),
+        Node(
+            package='ai_race',
+            namespace='ai_race_jetbot_1',
+            executable='motor_processing',
+            name='ai_race_motor_processing'
         )
     ])

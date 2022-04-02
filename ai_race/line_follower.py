@@ -36,39 +36,24 @@ class ImagePublisher(Node):
         self.model = self.model.eval().half()
 
         self.bridge = cv_bridge.CvBridge()
-        self.cmd_vel_pub = self.create_publisher(Twist, 'velocity', 1)
+        self.cmd_vel_pub = self.create_publisher(Twist, 'steering_line', 1)
         self.image_sub = self.create_subscription(Image, 'video_frames', self.image_callback, 1)
-        self.line_following_mode_sub = self.create_subscription(Bool, 'line_following_mode', self.line_following_mode_callback, 10)
-
-        self.line_following_mode = Bool()
-        self.line_following_mode.data = False
-
+       
         self.twist = Twist()
 
         self.get_logger().info(f'Init finished')
-
-    def line_following_mode_callback(self, msg):
-        self.line_following_mode.data = msg.data
-
-        if self.line_following_mode.data == False:
-            velocity = Twist()
-            velocity.linear.x = float(0.0)
-            velocity.angular.z =float(0.0)
-
-            self.cmd_vel_pub.publish(velocity)
         
     def image_callback(self, msg):
         image = self.bridge.imgmsg_to_cv2(msg, desired_encoding="passthrough")
         torch_ex_float_tensor = self.preprocess(image).half()
         output = self.model(torch_ex_float_tensor).detach().cpu().numpy().flatten()
             
-        if self.line_following_mode.data == True:
-            velocity = Twist()
-            velocity.linear.x = float(-0.4)
-            velocity.angular.z = float(output[0])  
+        velocity = Twist()
+        # velocity.linear.x = float(-0.4)
+        velocity.angular.z = float(output[0])  
 
-            self.cmd_vel_pub.publish(velocity)
-            self.get_logger().info(f'Position estimated')
+        self.cmd_vel_pub.publish(velocity)
+        self.get_logger().info(f'Position estimated')
 
     def preprocess(self, image):
         image = PIL.Image.fromarray(image)

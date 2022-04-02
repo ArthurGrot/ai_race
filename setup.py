@@ -37,6 +37,7 @@ setup(
             'flask_server = ' + package_name + '.flask_server:main',
             'line_follower = ' + package_name + '.line_follower:main',
             'yolo_jetracer = ' + package_name + '.yolo_jetracer:main',
+            'motor_processing = ' + package_name + '.motor_processing:main'
         ],
     },
 )
