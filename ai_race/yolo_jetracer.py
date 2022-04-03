@@ -37,7 +37,7 @@ class ImageSubscriberYolo(Node):
         super().__init__('image_subscriber_yolo')
         # '/workspace/src/ai_race/ai_race/models/road_following_model30a.pth'
         
-        self.model = torch.hub.load('/workspace/src/ai_race/ai_race/yolov5/', 'custom', path='/workspace/src/ai_race/ai_race/models/best.pt', source='local') # local repo
+        self.model = torch.hub.load('/workspace/src/ai_race/ai_race/yolov5/', 'custom', path='/workspace/src/ai_race/ai_race/models/yolov5Detection.pt', source='local') # local repo
         self.model.cuda()
         # parameters for distance estimation
         self.focal_length = 0.315
@@ -63,7 +63,7 @@ class ImageSubscriberYolo(Node):
             Image,
             'video_frames',
             self.listener_callback,
-            10)
+            1)
         self.subscription
         #self.i = 0
         self.br = CvBridge()
@@ -97,10 +97,9 @@ class ImageSubscriberYolo(Node):
         self.speed_pub.publish(motor_twist)
         self.get_logger().info(f"YOLO | {log}")
         # differentiate between speed and playmobil
-        event.set()
     
     def get_data(self, img):
-        res = self.model(self.cv_image,size=640)
+        res = self.model(self.cv_image,size=256)
         data = res.pandas().xyxy[0]
         objects_in_frame = []
         for obj in data.itertuples(index = True, name ='Pandas'):
@@ -127,20 +126,6 @@ class ImageSubscriberYolo(Node):
         distance = ((realObjectWidth * self.focal_length)/objectWidthInFrame)*100
         return distance
 
-def get_frame():
-    event.wait()
-    event.clear()
-    return image_subscriber_yolo.frame
-
-
-
-
-def gen():
-    while True:
-        frame = get_frame()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
 
 
 def runApp():
@@ -149,7 +134,6 @@ def runApp():
     image_subscriber_yolo = ImageSubscriberYolo()
 
     rclpy.spin(image_subscriber_yolo)
-    image_subscriber_yolo.destroy_node()
     rclpy.shutdown()
 
 
