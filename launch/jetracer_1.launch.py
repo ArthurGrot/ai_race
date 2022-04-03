@@ -38,7 +38,13 @@ def generate_launch_description():
             namespace='ai_race_jetracer_1',
             executable='motor_processing',
             name='ai_race_motor_processing'
-        )
+        ),
+        Node(
+            package='ai_race',
+            namespace='ai_race_jetracer_1',
+            executable='yolo_jetracer',
+            name='ai_race_yolo_jetracer'
+        ),
         # ,
         # Node(
         #     package='ai_race',

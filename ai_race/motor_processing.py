@@ -23,8 +23,8 @@ class MotorProcessing(Node):
         # subscriptions 
 
             # yolo speed
-        
-            # yolo figurine
+        self.sub_yolo_speed = self.create_subscription(Twist, 'speed_yolo', self.steering_yolo_speed, 1)
+            # yolo figurine avoidance
 
             # line
         self.sub_line = self.create_subscription(Twist, 'steering_line', self.steering_line, 1)
@@ -81,6 +81,11 @@ class MotorProcessing(Node):
     def steering_remote(self, msg):
         self.remote_speed = msg.linear.x
         self.remote_angle = msg.angular.z
+        self.publisher()
+        
+        # yolo speed
+    def steering_yolo_speed(self, msg):
+        self.yolo_speed = msg.linear.x
         self.publisher()
 
 def main(args=None):
