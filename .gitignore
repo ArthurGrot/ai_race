@@ -1,4 +1,4 @@
 
 .ipynb_checkpoints 
 ai_race_base.tar
-*/__pycache__/*
+__pycache__/
