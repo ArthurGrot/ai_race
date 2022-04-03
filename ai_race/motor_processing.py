@@ -1,5 +1,3 @@
-from msilib.schema import SelfReg
-from typing_extensions import Self
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
@@ -15,7 +13,7 @@ class MotorProcessing(Node):
         self.yolo_figurine = 0 # 
             # remote
         self.remote_mode = Bool()
-        self.remote_mode.data = False
+        self.remote_mode.data = True
 
         self.remote_speed = 0.0
         self.remote_angle = 0.0
@@ -41,7 +39,7 @@ class MotorProcessing(Node):
 
 
     def remote_mode_callback(self, msg):
-        self.line_following_mode.data = msg.data
+        self.remote_mode.data = msg.data
         self.publisher()
 
     # publisher motor
@@ -59,14 +57,15 @@ class MotorProcessing(Node):
 
         # line following / yolo
         else:
+
             # line following
             if True:
                 publish_value.angular.z = self.line_angle
             else:
                 pass
 
-        publish_value.linear.x = self.yolo_speed
-        return publish_value
+            publish_value.linear.x = self.yolo_speed
+            return publish_value
 
 
 
@@ -74,11 +73,15 @@ class MotorProcessing(Node):
         # line follower
     def steering_line(self,msg):
         self.line_angle = msg.angular.z
-        self.publisher()
+
+        if self.remote_mode.data == False:
+            self.publisher()
+            
         # remote
     def steering_remote(self, msg):
         self.remote_speed = msg.linear.x
         self.remote_angle = msg.angular.z
+        self.publisher()
 
 def main(args=None):
     rclpy.init(args=args)

@@ -18,8 +18,8 @@ class TeleopGamepad(Node):
         super().__init__('teleop_gamepad')
         self.pub_velocity = self.create_publisher(Twist, 'steering_remote', 10)
         self.pub_line_following_mode = self.create_publisher(Bool, 'remote_mode', 10)
-        self.line_following_mode = Bool()
-        self.line_following_mode.data = False
+        self.remote_mode = Bool()
+        self.remote_mode.data = True
         
         timer_period = 0.01  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
@@ -55,9 +55,9 @@ class TeleopGamepad(Node):
                 button = j.get_button(11)
 
                 if button == True:
-                    self.line_following_mode.data = not self.line_following_mode.data
-                    self.pub_line_following_mode.publish(self.line_following_mode)
-                    self.get_logger().info(str(self.line_following_mode.data))
+                    self.remote_mode.data = not self.remote_mode.data
+                    self.pub_line_following_mode.publish(self.remote_mode)
+                    self.get_logger().info(str(self.remote_mode.data))
             
         
 def main(args=None):
