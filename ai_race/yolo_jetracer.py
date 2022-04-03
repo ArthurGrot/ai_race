@@ -75,8 +75,8 @@ class ImageSubscriberYolo(Node):
 
 
     def listener_callback(self, data):
-        cv_image = self.br.imgmsg_to_cv2(data, desired_encoding="passthrough")
-        yolo_data = self.get_data(cv_image)
+        self.cv_image = self.br.imgmsg_to_cv2(data, desired_encoding="passthrough")
+        yolo_data = self.get_data(self.cv_image)
         motor_twist = Twist()
 
         log = ""
@@ -91,7 +91,7 @@ class ImageSubscriberYolo(Node):
                     motor_twist.angular.x = 0.55
                 elif obj[0] == "Michael":
                     motor_twist.angular.x = 0.0
-                log += f"Speed set to {motor_twist.anular.x}"
+                log += f"Speed set to {motor_twist.angular.x}"
                 self.get_logger().info(f"YOLO | Detected: {obj[0]} at ({obj[1]},{obj[2]}) {obj[5]}cm away")
         
         self.speed_pub.publish(motor_twist)
