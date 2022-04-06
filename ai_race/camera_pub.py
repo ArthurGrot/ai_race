@@ -12,8 +12,8 @@ class ImagePublisher(Node):
     capture_fps = 5
     capture_width = 640
     capture_height = 480
-    width = 224
-    height = 224
+    width = 480
+    height = 480
 
     #ctor
     def __init__(self):
@@ -37,6 +37,10 @@ class ImagePublisher(Node):
     def _gst_str(self):
         return 'nvarguscamerasrc sensor-id=%d ! video/x-raw(memory:NVMM), width=%d, height=%d, format=(string)NV12, framerate=(fraction)%d/1 ! nvvidconv ! video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! videoconvert ! appsink' % (
             self.capture_device, self.capture_width, self.capture_height, self.capture_fps, self.width, self.height)
+
+    def resize224(self,img):
+        dimension = (224,224)
+        return cv2.resize(img,dimension,interpolation = cv2.INTER_LINEAR) ## bilinear interpolation
 
 #main method important
 def main(args=None):
