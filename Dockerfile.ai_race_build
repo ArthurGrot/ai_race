@@ -31,6 +31,8 @@ COPY package.xml ${JETBOT_ROOT}
 COPY setup.py ${JETBOT_ROOT}
 COPY setup.cfg ${JETBOT_ROOT}
     
+COPY jetracer.sh ${WORKSPACE_ROOT}
+
 RUN source ${ROS_ENVIRONMENT_INSTALL} && \
     cd ${WORKSPACE_ROOT} && \
     colcon build --symlink-install --packages-select ai_race
