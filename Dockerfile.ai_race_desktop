@@ -1,0 +1,6 @@
+ARG BASE_IMAGE=/ros:foxy-ros-base
+FROM ${BASE_IMAGE}
+
+RUN pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
+
+RUN pip3 install -r ai_race/yolov5/requirements.txt
