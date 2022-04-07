@@ -61,7 +61,7 @@ class ImageSubscriberYolo(Node):
         #example for subscription 
         self.subscription = self.create_subscription(
             Image,
-            'video_frames',
+            'video_frames_480',
             self.listener_callback,
             1)
         self.subscription

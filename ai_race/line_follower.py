@@ -18,13 +18,6 @@ std = torch.Tensor([0.229, 0.224, 0.225]).cuda()
 
 class ImagePublisher(Node):
 
-    capture_device = 0
-    capture_fps = 30
-    capture_width = 640
-    capture_height = 480
-    width = 224
-    height = 224
-
     def __init__(self):
         super().__init__('line_follower')
 
@@ -37,7 +30,7 @@ class ImagePublisher(Node):
 
         self.bridge = cv_bridge.CvBridge()
         self.cmd_vel_pub = self.create_publisher(Twist, 'steering_line', 1)
-        self.image_sub = self.create_subscription(Image, 'video_frames', self.image_callback, 1)
+        self.image_sub = self.create_subscription(Image, 'video_frames_224', self.image_callback, 1)
        
         self.twist = Twist()
 

@@ -21,7 +21,8 @@ class ImagePublisher(Node):
         super().__init__('image_publisher')
 
         #example for publisher
-        self.publisher_ = self.create_publisher(Image, 'video_frames', 1)
+        self.publisher_224 = self.create_publisher(Image, 'video_frames_224', 1)
+        self.publisher_480 = self.create_publisher(Image, 'video_frames_480', 1)
 
         self.cap = cv2.VideoCapture(self._gst_str(), cv2.CAP_GSTREAMER)
         self.br = CvBridge()
@@ -31,8 +32,9 @@ class ImagePublisher(Node):
 
             if ret == True:
                 #example for publishing and converting image
-                self.publisher_.publish(self.br.cv2_to_imgmsg(frame))
-
+                self.publisher_480.publish(self.br.cv2_to_imgmsg(frame))
+                frame_224 = resize224(frame)
+                self.publisher_224.publish(self.br.cv2_to_imgmsg(frame_224))
 
     def _gst_str(self):
         return 'nvarguscamerasrc sensor-id=%d ! video/x-raw(memory:NVMM), width=%d, height=%d, format=(string)NV12, framerate=(fraction)%d/1 ! nvvidconv ! video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! videoconvert ! appsink' % (
