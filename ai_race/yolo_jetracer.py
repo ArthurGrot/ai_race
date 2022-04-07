@@ -37,7 +37,7 @@ class ImageSubscriberYolo(Node):
         super().__init__('image_subscriber_yolo')
         # '/workspace/src/ai_race/ai_race/models/road_following_model30a.pth'
         
-        self.model = torch.hub.load('/workspace/src/ai_race/ai_race/yolov5/', 'custom', path='/workspace/src/ai_race/ai_race/models/best.pt', source='local') # local repo
+        self.model = torch.hub.load('/workspace/src/ai_race/ai_race/yolov5/', 'custom', path='/workspace/src/ai_race/ai_race/models/yolov5Detection.pt', source='local') # local repo
         self.model.cuda()
         # parameters for distance estimation
         self.focal_length = 0.315
@@ -83,7 +83,7 @@ class ImageSubscriberYolo(Node):
         # indecees
         # (name, xmin, ymin, object_width, object_height, distance, conf)
         for obj in yolo_data:
-            if obj[6] > 0.8: # confidence greater than ...
+            if obj[6] > 0.5: # confidence greater than ...
                 # Speed params
                 if obj[0] == "Speed 30":    # speed 30 detected
                     motor_twist.angular.x = 0.4
@@ -92,7 +92,7 @@ class ImageSubscriberYolo(Node):
                 elif obj[0] == "Michael":
                     motor_twist.angular.x = 0.0
                 log += f"Speed set to {motor_twist.angular.x}"
-                self.get_logger().info(f"YOLO | Detected: {obj[0]} at ({obj[1]},{obj[2]}) {obj[5]}cm away")
+                self.get_logger().info(f"YOLO | Detected: {obj[0]} with Conf {obj[6]} at ({obj[1]},{obj[2]}) {obj[5]}cm away")
         
         self.speed_pub.publish(motor_twist)
         self.get_logger().info(f"YOLO | {log}")
