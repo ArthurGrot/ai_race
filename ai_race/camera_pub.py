@@ -33,7 +33,7 @@ class ImagePublisher(Node):
             if ret == True:
                 #example for publishing and converting image
                 self.publisher_480.publish(self.br.cv2_to_imgmsg(frame))
-                frame_224 = resize224(frame)
+                frame_224 = self.resize224(frame)
                 self.publisher_224.publish(self.br.cv2_to_imgmsg(frame_224))
 
     def _gst_str(self):

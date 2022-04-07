@@ -19,7 +19,7 @@ class ImageSubscriber(Node):
         #example for subscription 
         self.subscription = self.create_subscription(
             Image,
-            'video_frames',
+            'video_frames_224',
             self.listener_callback,
             10)
         self.subscription

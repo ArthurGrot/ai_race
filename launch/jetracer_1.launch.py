@@ -18,18 +18,6 @@ def generate_launch_description():
         Node(
             package='ai_race',
             namespace='ai_race_jetracer_1',
-            executable='camera_pub',
-            name='ai_race_camera_pub'
-        ),
-        Node(
-            package='ai_race',
-            namespace='ai_race_jetracer_1',
-            executable='flask_server',
-            name='ai_race_flask_server'
-        ),
-        Node(
-            package='ai_race',
-            namespace='ai_race_jetracer_1',
             executable='line_follower',
             name='ai_race_line_follower'
         ),

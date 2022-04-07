@@ -1,0 +1,1 @@
+sudo docker exec -it ai_race bash

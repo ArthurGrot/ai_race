@@ -15,10 +15,5 @@ def generate_launch_description():
             executable='yolo_jetracer',
             name='ai_race_yolo_jetracer'
         ),
-        Node(
-            package='ai_race',
-            namespace='ai_race_jetracer_1',
-            executable='flask_server',
-            name='ai_race_flask_server'
-        ),
+
     ])
