@@ -51,3 +51,13 @@ ros2 launch ai_race jetracer_line_following.launch.py
 
 https://www.seeedstudio.com/blog/2020/07/09/monitor-gpu-cpu-and-other-stats-on-jetson-nano-xavier-nx-tx1-tx2/
 https://askubuntu.com/questions/114997/how-where-do-i-check-my-ubuntu-laptopss-cpu-usage
+
+
+
+# Docker ROS Communication across Nanos
+
+Nanos müssen sich im gleichen W-LAN-Netzwerk befinden.
+Docker Container müssen mit Argument "--net=host" gestartet werden. Container vorzugsweise mit "docker_run.sh"-Skript im Verzeichnis starten.
+Gestartete Nodes müssen sich im gleichen Namespace befinden.
+Nano 1: Hat Node mit Publisher mit Topic A.
+Nano 2: Hat Node mit Subscriber mit Topic A.
