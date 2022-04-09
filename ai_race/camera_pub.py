@@ -21,8 +21,8 @@ class ImagePublisher(Node):
         super().__init__('image_publisher')
 
         #example for publisher
-        self.publisher_224 = self.create_publisher(Image, 'video_frames_224', 1)
-        self.publisher_480 = self.create_publisher(Image, 'video_frames_480', 1)
+        self.publisher_224 = self.create_publisher(Image, 'video_frames_224', 5)
+        self.publisher_480 = self.create_publisher(Image, 'video_frames_480', 5)
 
         self.cap = cv2.VideoCapture(self._gst_str(), cv2.CAP_GSTREAMER)
         self.br = CvBridge()
