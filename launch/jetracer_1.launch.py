@@ -6,6 +6,12 @@ def generate_launch_description():
         Node(
             package='ai_race',
             namespace='ai_race_jetracer_1',
+            executable='camera_pub',
+            name='ai_race_camera_pub'
+        ),
+        Node(
+            package='ai_race',
+            namespace='ai_race_jetracer_1',
             executable='teleop_gamepad',
             name='ai_race_teleop'
         ),
@@ -26,6 +32,12 @@ def generate_launch_description():
             namespace='ai_race_jetracer_1',
             executable='motor_processing',
             name='ai_race_motor_processing'
+        ),
+        Node(
+            package='ai_race',
+            namespace='ai_race_jetracer_1',
+            executable='flask_server',
+            name='ai_race_flask_server'
         ),
         # Node(
         #     package='ai_race',
