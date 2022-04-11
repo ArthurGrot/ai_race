@@ -23,7 +23,7 @@ class ImagePublisher(Node):
 
         self.model = torchvision.models.resnet18(pretrained=False)
         self.model.fc = torch.nn.Linear(512, 2)
-        self.model.load_state_dict(torch.load('/workspace/src/ai_race/ai_race/models/road_following_model_2.0_30a.pth'))
+        self.model.load_state_dict(torch.load('/workspace/src/ai_race/ai_race/models/road_following_model_2.0_40a.pth'))
         self.device = torch.device('cuda')
         self.model = self.model.to(self.device)
         self.model = self.model.eval().half()
