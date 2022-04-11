@@ -37,7 +37,7 @@ class ImageSubscriberYolo(Node):
         super().__init__('image_subscriber_yolo')
         # '/workspace/src/ai_race/ai_race/models/road_following_model30a.pth'
         
-        self.model = torch.hub.load('/workspace/src/ai_race/ai_race/yolov5/', 'custom', path='/workspace/src/ai_race/ai_race/models/yolov5Detection.pt', source='local') # local repo
+        self.model = torch.hub.load('/workspace/src/ai_race/ai_race/yolov5/', 'custom', path='/workspace/src/ai_race/ai_race/models/best.pt', source='local') # local repo
         self.model.cuda()
         
         # parameters for distance estimation
