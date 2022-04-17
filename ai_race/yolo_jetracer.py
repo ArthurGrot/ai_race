@@ -56,7 +56,6 @@ class ImageSubscriberYolo(Node):
         #    # reference widths
         #
         #obj = michael_res.pandas().xyxy[0].at(0)
-        #self.michael = self.DetectionDetails("Michael",)
 
 
         #example for subscription 
@@ -100,6 +99,9 @@ class ImageSubscriberYolo(Node):
         # differentiate between speed and playmobil
     
     def get_data(self, img):
+        """ returns a tuple of size seven containing \n
+        (name, xmin, ymin, object_width, object_height, distance, conf)
+        """
         res = self.model(self.cv_image,size=256)
         data = res.pandas().xyxy[0]
         objects_in_frame = []
