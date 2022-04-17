@@ -7,6 +7,7 @@ from cv_bridge import CvBridge
 from geometry_msgs.msg import Twist
 from threading import Thread, Event
 import torch
+import math
 
 event = Event()
 image_subscriber_yolo = None
@@ -22,14 +23,14 @@ class ImageSubscriberYolo(Node):
 
     def find_width(self, image):
         object_width = 0
-        res = self.model(image,size=640)
+        res = self.model(image,size=480)
         res.render()  
         coords = res.pandas().xyxy[0]
         for obj in coords.itertuples(index = True, name ='Pandas'):
             xmin = getattr(obj, "xmin")
             xmax = getattr(obj, "xmax")
 
-            object_width = ((xmax - xmin)/640)
+            object_width = ((xmax - xmin)/480)
         return object_width
 
 
@@ -42,6 +43,7 @@ class ImageSubscriberYolo(Node):
         
         # parameters for distance estimation
         self.focal_length = 0.315
+        self.michael_count = 0
 
             # reference images
         #michael_ref = cv2.imread("PATH TO MICHAEL REF IMAGE")
@@ -77,32 +79,67 @@ class ImageSubscriberYolo(Node):
     def listener_callback(self, data):
         self.cv_image = self.br.imgmsg_to_cv2(data, desired_encoding="passthrough")
         yolo_data = self.get_data(self.cv_image)
-        motor_twist = Twist()
+        self.motor_twist = Twist()
 
-        log = ""
         # indecees
         # (name, xmin, ymin, object_width, object_height, distance, conf)
         for obj in yolo_data:
-            if obj[6] > 0.5: # confidence greater than ...
+            if obj[6] > 0.8: # confidence greater than ...
                 # Speed params
                 if obj[0] == "Speed 30":    # speed 30 detected
-                    motor_twist.angular.x = 0.4
+                    self.motor_twist.angular.x = 0.4
                 elif obj[0] == "Speed 50":   # speed 50 detected
-                    motor_twist.angular.x = 0.55
+                    self.motor_twist.angular.x = 0.55
                 elif obj[0] == "Michael":
-                    motor_twist.angular.x = 0.0
-                log += f"Speed set to {motor_twist.angular.x}"
+                    self.motor_twist = self.figurine_detected(self, obj)
+                    self.michael_count += 1
                 self.get_logger().info(f"YOLO | Detected: {obj[0]} with Conf {obj[6]} at ({obj[1]},{obj[2]}) {obj[5]}cm away")
-        
-        self.speed_pub.publish(motor_twist)
-        self.get_logger().info(f"YOLO | {log}")
+        if(self.motor_twist != None):
+            self.speed_pub.publish(self.motor_twist)
         # differentiate between speed and playmobil
+
+    def figurine_detected(self, obj): 
+        """ 
+        does the required calculations for whether or not the vehicle has to act, depending on where the object is in the image (center of mass)
+        """
+        # calculate center of mass (x,y)
+        center_of_mass = (round((obj[1]+obj[3])/2), round((obj[2]+obj[4])/2))
+        x_quadrant = math.floor(center_of_mass[0]/160)
+        y_quadrant = math.floor(center_of_mass[1]/160)
+        twist = Twist()
+        
+        # decide based upon the segmented zones in the image
+        # zones =   0-159,0-159   | 159-320, 0-159   | 321-480, 0-159 
+        #           0-159,159-320 | 159-320, 159-320 | 321-480, 159-320
+        #           0-159,321-480 | 159-320, 321-480 | 321-480, 321-480 
+        if(y_quadrant == 0 & x_quadrant == 1):
+            # Do nothing yet needs to be seen if necessary
+            return
+        if(y_quadrant == 1 & x_quadrant == 1):
+                twist.angular.z = 1.0
+        elif(y_quadrant == 2):
+            if(x_quadrant == 0):
+                twist.angular.z = 0.3
+            elif(x_quadrant == 1):
+                com = center_of_mass[0]/160
+                if(com > 1.5):
+                    twist.angular.z = - 0.7
+                else:
+                    twist.angular.z = 0.7
+            elif(x_quadrant == 2):
+                twist.angular.z = -0.3
+                
+        if(self.michael_count >= 5):
+            return twist
+        else:
+            return None
+
     
     def get_data(self, img):
         """ returns a tuple of size seven containing \n
         (name, xmin, ymin, object_width, object_height, distance, conf)
         """
-        res = self.model(self.cv_image,size=256)
+        res = self.model(self.cv_image,size=480)
         data = res.pandas().xyxy[0]
         objects_in_frame = []
         for obj in data.itertuples(index = True, name ='Pandas'):
@@ -113,10 +150,10 @@ class ImageSubscriberYolo(Node):
             
             name = getattr(obj, "name")
             conf = getattr(obj, "confidence")
-            object_width = ((xmax - xmin)/640)
+            object_width = ((xmax - xmin)/480)
             object_height = ((ymax - ymin)/480)
 
-            distance =  0 #self.distance_finder() # add once necessary
+            distance =  0 #self.distance_finder() # add once necessary # turns out that it isnt necessary yet
 
 
             detected_object = (name, xmin, ymin, object_width, object_height, distance, conf)
