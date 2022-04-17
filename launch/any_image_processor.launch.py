@@ -11,7 +11,7 @@ def generate_launch_description():
         ),
         Node(
             package='ai_race',
-            namespace='ai_race_jetbot_1',
+            namespace='ai_race_jetracer_1',
             executable='flask_server',
             name='ai_race_flask_server'
         ),
