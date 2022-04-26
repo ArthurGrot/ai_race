@@ -2,7 +2,7 @@
 
 commands:
 
-    git clone https://github.com/Radtour/ai_race
+    git clone https://github.com/ArthurGrot/ai_race
     cd ai_race
     . jetson_setup.sh
     . docker_run.sh
