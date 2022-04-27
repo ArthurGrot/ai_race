@@ -106,8 +106,9 @@ class ImageSubscriberYolo(Node):
                 self.get_logger().info(f"YOLO | Detected: {obj[0]} with Conf {obj[6]} at ({obj[1]},{obj[2]}) {obj[5]}cm away")
 
 
-        if(self.michael_count > 0 & (not michael_in_data)):
-            self.motor_twist.angular.z = self.motor_twist.angular.z * (-1)
+        if(self.michael_count == 0 & (not michael_in_data)):
+            # turnback
+            self.motor_twist.angular.z = (self.motor_twist.angular.z * (-1.0))
             self.michael_count -= 1.0
         elif(self.michael_count == 0):
             self.motor_twist.angular.z = 0.0

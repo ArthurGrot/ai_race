@@ -58,7 +58,7 @@ class MotorProcessing(Node):
         else:
             publish_value.linear.x = self.yolo_speed
             # line following
-            if self.yolo_avoidance_mode:+
+            if self.yolo_avoidance_mode:
                 publish_value.angular.z = self.yolo_angle
             else 
                 publish_value.angular.z = self.line_angle
@@ -83,7 +83,7 @@ class MotorProcessing(Node):
         
         # yolo speed
     def steering_yolo_speed(self, msg):
-        # speed
+        # speedexit
         self.yolo_speed = msg.linear.x
         # angle
         self.yolo_angle = msg.angular.z
