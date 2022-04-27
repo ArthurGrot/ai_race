@@ -19,6 +19,8 @@ class MotorProcessing(Node):
         self.remote_angle = 0.0
             # line
         self.line_angle = 0.0
+
+        self.yolo_avoidance_mode = False
         
         # subscriptions 
 
@@ -59,7 +61,7 @@ class MotorProcessing(Node):
         else:
 
             # line following
-            if True:
+            if self.yolo_avoidance_mode:
                 publish_value.angular.z = self.line_angle
             else:
                 pass
@@ -86,6 +88,8 @@ class MotorProcessing(Node):
         # yolo speed
     def steering_yolo_speed(self, msg):
         self.yolo_speed = msg.linear.x
+        self.yolo_avoidance_mode = bool(msg.linear.z)
+
         self.publisher()
 
 def main(args=None):

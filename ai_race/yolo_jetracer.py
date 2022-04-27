@@ -61,12 +61,13 @@ class ImageSubscriberYolo(Node):
 
 
         #example for subscription 
-        self.subscription = self.create_subscription(
-            Image,
-            'video_frames_480',
-            self.listener_callback,
-            5)
-        self.subscription
+        self.subscription_cam = self.create_subscription(Image, 'video_frames_480', self.listener_callback_yolo, 5)
+        self.subscription_cam
+
+        # uncomment when clear how to handle the publishing
+        # self.subscription_line = self.create_subscription(Image, 'line_follower', self.listener_callback_line, 1)
+        # self.subscription_line
+
         #self.i = 0
         self.br = CvBridge()
         self.frame = None
@@ -76,24 +77,41 @@ class ImageSubscriberYolo(Node):
     
 
 
-    def listener_callback(self, data):
+    def listener_callback_yolo(self, data):
         self.cv_image = self.br.imgmsg_to_cv2(data, desired_encoding="passthrough")
         yolo_data = self.get_data(self.cv_image)
         self.motor_twist = Twist()
-
+        # speed control yolo check
+        self.motor_twist.linear.y = 1.0
+        # steering control yolo check
+        self.motor_twist.linear.z = 0.0
         # indecees
         # (name, xmin, ymin, object_width, object_height, distance, conf)
+        michael_in_data = False
+
         for obj in yolo_data:
             if obj[6] > 0.8: # confidence greater than ...
                 # Speed params
                 if obj[0] == "Speed 30":    # speed 30 detected
-                    self.motor_twist.angular.x = 0.4
+                    self.motor_twist.linear.x = 0.4
                 elif obj[0] == "Speed 50":   # speed 50 detected
-                    self.motor_twist.angular.x = 0.55
+                    self.motor_twist.linear.x = 0.55
                 elif obj[0] == "Michael":
-                    self.motor_twist = self.figurine_detected(self, obj)
+                    self.motor_twist = self.figurine_detected(obj)
                     self.michael_count += 1
+                    michael_in_data = True
+                else:
+                    # change this later when more figurines are being tested
+                    michael_in_data = False
                 self.get_logger().info(f"YOLO | Detected: {obj[0]} with Conf {obj[6]} at ({obj[1]},{obj[2]}) {obj[5]}cm away")
+
+
+        if(self.michael_count > 0 & (not michael_in_data)):
+            self.motor_twist.angular.z = self.motor_twist.angular.z * (-1)
+            self.michael_count -= 1.0
+        elif(self.michael_count == 0):
+            self.motor_twist.angular.z = 0.0
+
         if(self.motor_twist != None):
             self.speed_pub.publish(self.motor_twist)
         # differentiate between speed and playmobil
@@ -107,7 +125,8 @@ class ImageSubscriberYolo(Node):
         x_quadrant = math.floor(center_of_mass[0]/160)
         y_quadrant = math.floor(center_of_mass[1]/160)
         twist = Twist()
-        
+        if(obj[0] == "Michael") :
+            self.michael_count += 1
         # decide based upon the segmented zones in the image
         # zones =   0-159,0-159   | 159-320, 0-159   | 321-480, 0-159 
         #           0-159,159-320 | 159-320, 159-320 | 321-480, 159-320
@@ -122,17 +141,20 @@ class ImageSubscriberYolo(Node):
                 twist.angular.z = 0.3
             elif(x_quadrant == 1):
                 com = center_of_mass[0]/160
-                if(com > 1.5):
-                    twist.angular.z = - 0.7
-                else:
-                    twist.angular.z = 0.7
-            elif(x_quadrant == 2):
                 twist.angular.z = -0.3
                 
         if(self.michael_count >= 5):
+            # deactivates line following
+            self.michael_count = 5
+            twist.linear.z = 1.0
             return twist
         else:
             return None
+
+    def listener_callback_line(self, steering):
+        if(self.michael_count == 0):
+            self.twist.angular.z = steering.angular.z
+            self.speed_pub.publish(self.motor_twist)
 
     
     def get_data(self, img):

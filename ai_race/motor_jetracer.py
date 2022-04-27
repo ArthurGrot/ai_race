@@ -26,7 +26,7 @@ class MotorJetracer(Node):
         self.throttle_gain = self.get_parameter('throttle_gain').value
 
         self.add_on_set_parameters_callback(self.parameters_callback)
-
+        
         self.last_x = -999
         self.last_rot = -999
 
@@ -37,6 +37,7 @@ class MotorJetracer(Node):
         self.kit = ServoKit(channels=16, address=self.i2c_address)
         self.steering_motor = self.kit.continuous_servo[self.steering_channel]
         self.throttle_motor = self.kit.continuous_servo[self.throttle_channel]
+
 
     def parameters_callback(self, params):
         for param in params:
@@ -79,6 +80,8 @@ class MotorJetracer(Node):
         self.steering_motor.throttle =  rot 
 
         self.get_logger().info(f"x={x:.03f} rotation={rot:.03f}")
+
+        
      
     def destroy_node(self):
         self.get_logger().info(f"shutting down, stopping robot...")

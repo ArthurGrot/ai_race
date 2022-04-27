@@ -26,6 +26,7 @@ ENV PYTHONPATH="${JETBOT_ROOT}:${PYTHONPATH}"
 COPY ai_race ${JETBOT_ROOT}/ai_race
 COPY launch ${JETBOT_ROOT}/launch
 COPY resource ${JETBOT_ROOT}/resource
+COPY addons/arial.ttf ${JETBOT_ROOT}/.config/Ultralytics
 
 COPY package.xml ${JETBOT_ROOT}
 COPY setup.py ${JETBOT_ROOT}
