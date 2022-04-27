@@ -60,7 +60,7 @@ class MotorProcessing(Node):
             # line following
             if self.yolo_avoidance_mode:
                 publish_value.angular.z = self.yolo_angle
-            else 
+            else:
                 publish_value.angular.z = self.line_angle
 
             return publish_value

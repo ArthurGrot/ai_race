@@ -139,10 +139,10 @@ class ImageSubscriberYolo(Node):
                 twist.angular.z = 1.0
         elif(y_quadrant == 2):
             if(x_quadrant == 0):
-                twist.angular.z = 0.3
+                twist.angular.z = 1.0
             elif(x_quadrant == 1):
                 com = center_of_mass[0]/160
-                twist.angular.z = -0.3
+                twist.angular.z = -1.0
                 
         if(self.michael_count >= 5):
             # deactivates line following
