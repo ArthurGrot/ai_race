@@ -9,8 +9,7 @@ class MotorProcessing(Node):
         # Data from Twists
             # yolo speed
         self.yolo_speed = -0.4 # speed 30 
-            # yolo figurine
-        self.yolo_figurine = 0 # 
+        self.yolo_angle = 0.0 
             # remote
         self.remote_mode = Bool()
         self.remote_mode.data = True
@@ -24,10 +23,8 @@ class MotorProcessing(Node):
         
         # subscriptions 
 
-            # yolo speed
+            # yolo 
         self.sub_yolo_speed = self.create_subscription(Twist, 'speed_yolo', self.steering_yolo_speed, 1)
-            # yolo figurine avoidance
-
             # line
         self.sub_line = self.create_subscription(Twist, 'steering_line', self.steering_line, 1)
         
@@ -59,14 +56,13 @@ class MotorProcessing(Node):
 
         # line following / yolo
         else:
-
-            # line following
-            if self.yolo_avoidance_mode:
-                publish_value.angular.z = self.line_angle
-            else:
-                pass
-
             publish_value.linear.x = self.yolo_speed
+            # line following
+            if self.yolo_avoidance_mode:+
+                publish_value.angular.z = self.yolo_angle
+            else 
+                publish_value.angular.z = self.line_angle
+
             return publish_value
 
 
@@ -87,7 +83,11 @@ class MotorProcessing(Node):
         
         # yolo speed
     def steering_yolo_speed(self, msg):
+        # speed
         self.yolo_speed = msg.linear.x
+        # angle
+        self.yolo_angle = msg.angular.z
+        # yolo take the wheel https://youtu.be/lydBPm2KRaU?t=86
         self.yolo_avoidance_mode = bool(msg.linear.z)
 
         self.publisher()
