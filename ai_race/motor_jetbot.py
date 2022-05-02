@@ -73,8 +73,8 @@ class MotorJetbot(Node):
         return SetParametersResult(successful=True)
         
     def twist_listener(self, msg):
-        x = msg.linear.x * self.speed_muliplier
-        rot = msg.angular.z
+        x = msg.linear.x * self.speed_muliplier * -1.0
+        rot = msg.angular.z * -1.0
         
         if x == self.last_x and rot == self.last_rot:
             return

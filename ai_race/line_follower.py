@@ -43,7 +43,7 @@ class ImagePublisher(Node):
             
         velocity = Twist()
         # velocity.linear.x = float(-0.4)
-        velocity.angular.z = float(output[0])  
+        velocity.angular.z = float(output[0]) * -1.0  
 
         self.cmd_vel_pub.publish(velocity)
         self.get_logger().info(f'Position estimated')

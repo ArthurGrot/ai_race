@@ -8,7 +8,7 @@ class MotorProcessing(Node):
         super().__init__('motor_processing')
         # Data from Twists
             # yolo speed
-        self.yolo_speed = -0.4 # speed 30 
+        self.yolo_speed = 0.4 # speed 30 
         self.yolo_angle = 0.0 
             # remote
         self.remote_mode = Bool()
@@ -89,8 +89,11 @@ class MotorProcessing(Node):
         self.yolo_angle = msg.angular.z
         # yolo take the wheel https://youtu.be/lydBPm2KRaU?t=86
         self.yolo_avoidance_mode = bool(msg.linear.z)
-
-        self.publisher()
+       
+        
+        if self.remote_mode.data == False:
+            node.get_logger().info(f"{self.yolo_yolo_avoidance_mode}")
+            self.publisher()
 
 def main(args=None):
     rclpy.init(args=args)

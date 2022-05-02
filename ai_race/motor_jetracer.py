@@ -57,8 +57,8 @@ class MotorJetracer(Node):
         return SetParametersResult(successful=True)
 
     def twist_listener(self, msg):
-        x = msg.linear.x * self.throttle_gain * -1.0
-        rot = msg.angular.z * self.steering_gain * -1.0 + self.steering_offset
+        x = msg.linear.x * self.throttle_gain
+        rot = msg.angular.z * self.steering_gain + self.steering_offset
 
         if x == self.last_x and rot == self.last_rot:
             return
