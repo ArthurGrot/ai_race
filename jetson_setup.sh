@@ -33,7 +33,7 @@ echo "[START] build docker base image"
 sudo docker build -f  Dockerfile.ai_race_base -t ai_race_base .
 echo "[FINISHED] build docker base image"
 echo "[START] Arial.ttf download for Pytorch Yolov5"
-sudo wget -O /home/jetson/ai_race/addons/arial.ttf https://ultralytics.com/assets/Arial.ttf
+sudo wget -O /home/jetson/ai_race/addons/Arial.ttf https://ultralytics.com/assets/Arial.ttf
 echo "[FINISHED] Arial.ttf download for Pytorch Yolov5"
 echo "[START] build docker build image"
 sudo docker build -f  Dockerfile.ai_race_build -t ai_race_build .

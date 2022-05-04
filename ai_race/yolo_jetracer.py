@@ -38,7 +38,7 @@ class ImageSubscriberYolo(Node):
         super().__init__('image_subscriber_yolo')
         # '/workspace/src/ai_race/ai_race/models/road_following_model30a.pth'
         
-        self.model = torch.hub.load('/workspace/src/ai_race/ai_race/yolov5/', 'custom', path='/workspace/src/ai_race/ai_race/models/best.pt', source='local') # local repo
+        self.model = torch.hub.load('/workspace/src/ai_race/ai_race/yolov5/', 'custom', path='/workspace/src/ai_race/ai_race/models/best.pt', source='local', force_reload=True) # local repo
         self.model.cuda()
         
         # parameters for distance estimation
@@ -100,25 +100,24 @@ class ImageSubscriberYolo(Node):
                     self.speed = 0.55
                 elif obj[0] == "Michael":
                     self.motor_twist = self.figurine_detected(obj)
-                    self.michael_count += 1
                     michael_in_data = True
                     if(self.michael_count >= 3):
                         # deactivates line following
                         self.motor_twist.linear.z = 1.0
-                        self.michael_count = 5
+                        self.michael_count = 3
                     else:
                         self.motor_twist.linear.z = 0.0
                         
                 else:
                     # change this later when more figurines are being tested
-                    michael_in_data = False
+                    michael_in_data = (michael_in_data or False)
                 self.get_logger().info(f"YOLO | Detected: {obj[0]} with Conf {obj[6]} at ({obj[1]},{obj[2]}) {obj[5]}cm away")
 
 
         if(self.michael_count != 0 & (not michael_in_data)):
             # turnback
             self.motor_twist.angular.z = (self.motor_twist.angular.z * (-1.0))
-            self.michael_count -= 1.0
+            self.michael_count -= 1
         elif(self.michael_count == 0):
             self.motor_twist.angular.z = 0.0
 
@@ -131,9 +130,10 @@ class ImageSubscriberYolo(Node):
         does the required calculations for whether or not the vehicle has to act, depending on where the object is in the image (center of mass)
         """
         # calculate center of mass (x,y)
-        center_of_mass = (round((obj[1]+obj[3])/2), round((obj[2]+obj[4])/2))
+        center_of_mass = (round( obj[1] + (obj[3]/2) ), round( obj[2] + (obj[4]/2) ))
         x_quadrant = math.floor(center_of_mass[0]/160)
         y_quadrant = math.floor(center_of_mass[1]/160)
+        self.get_logger().info(f"YOLO | {center_of_mass[0]/160}, {center_of_mass[1]/240}")
         twist = Twist()
         if(obj[0] == "Michael") :
             self.michael_count += 1
@@ -151,6 +151,8 @@ class ImageSubscriberYolo(Node):
                 twist.angular.z = 1.0
             elif(x_quadrant == 1):
                 com = center_of_mass[0]/160
+                twist.angular.z = -1.0
+            elif(x_quadrant == 2):
                 twist.angular.z = -1.0
         
         self.get_logger().info(f"YOLO | {obj[0]} in Quadrant: ({x_quadrant}{y_quadrant}). Steering: {twist.angular.z}. Michael Count: {self.michael_count}")
