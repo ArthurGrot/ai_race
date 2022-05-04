@@ -74,6 +74,8 @@ class ImageSubscriberYolo(Node):
         # yolo speed publisher
         self.speed_pub = self.create_publisher(Twist, 'speed_yolo', 1)
 
+        self.speed = 0.4
+
     
 
 
@@ -90,31 +92,38 @@ class ImageSubscriberYolo(Node):
         michael_in_data = False
 
         for obj in yolo_data:
-            if obj[6] > 0.8: # confidence greater than ...
+            if obj[6] > 0.7: # confidence greater than ...
                 # Speed params
                 if obj[0] == "Speed 30":    # speed 30 detected
-                    self.motor_twist.linear.x = 0.4
+                    self.speed = 0.4
                 elif obj[0] == "Speed 50":   # speed 50 detected
-                    self.motor_twist.linear.x = 0.55
+                    self.speed = 0.55
                 elif obj[0] == "Michael":
                     self.motor_twist = self.figurine_detected(obj)
                     self.michael_count += 1
                     michael_in_data = True
+                    if(self.michael_count >= 3):
+                        # deactivates line following
+                        self.motor_twist.linear.z = 1.0
+                        self.michael_count = 5
+                    else:
+                        self.motor_twist.linear.z = 0.0
+                        
                 else:
                     # change this later when more figurines are being tested
                     michael_in_data = False
                 self.get_logger().info(f"YOLO | Detected: {obj[0]} with Conf {obj[6]} at ({obj[1]},{obj[2]}) {obj[5]}cm away")
 
 
-        if(self.michael_count == 0 & (not michael_in_data)):
+        if(self.michael_count != 0 & (not michael_in_data)):
             # turnback
             self.motor_twist.angular.z = (self.motor_twist.angular.z * (-1.0))
             self.michael_count -= 1.0
         elif(self.michael_count == 0):
             self.motor_twist.angular.z = 0.0
 
-        if(self.motor_twist != None):
-            self.speed_pub.publish(self.motor_twist)
+        self.motor_twist.linear.x = self.speed
+        self.speed_pub.publish(self.motor_twist)
         # differentiate between speed and playmobil
 
     def figurine_detected(self, obj): 
@@ -136,21 +145,16 @@ class ImageSubscriberYolo(Node):
             # Do nothing yet needs to be seen if necessary
             return
         if(y_quadrant == 1 & x_quadrant == 1):
-                twist.angular.z = 1.0
+                twist.angular.z = -1.0
         elif(y_quadrant == 2):
             if(x_quadrant == 0):
                 twist.angular.z = 1.0
             elif(x_quadrant == 1):
                 com = center_of_mass[0]/160
                 twist.angular.z = -1.0
-                
-        if(self.michael_count >= 5):
-            # deactivates line following
-            self.michael_count = 5
-            twist.linear.z = 1.0
-            return twist
-        else:
-            return None
+        
+        self.get_logger().info(f"YOLO | {obj[0]} in Quadrant: ({x_quadrant}{y_quadrant}). Steering: {twist.angular.z}. Michael Count: {self.michael_count}")
+        return twist
 
     def listener_callback_line(self, steering):
         if(self.michael_count == 0):

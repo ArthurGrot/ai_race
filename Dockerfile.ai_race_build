@@ -4,6 +4,8 @@ FROM ${BASE_IMAGE}
 SHELL ["/bin/bash", "-c"] 
 ENV SHELL /bin/bash
 
+# RUN useradd -ms /bin/bash aiuser
+RUN mkdir /home/root
 #
 # environment setup
 #   
@@ -26,7 +28,8 @@ ENV PYTHONPATH="${JETBOT_ROOT}:${PYTHONPATH}"
 COPY ai_race ${JETBOT_ROOT}/ai_race
 COPY launch ${JETBOT_ROOT}/launch
 COPY resource ${JETBOT_ROOT}/resource
-COPY addons/arial.ttf ${JETBOT_ROOT}/.config/Ultralytics
+COPY addons/Arial.ttf /home/root/.config/Ultralytics/Arial.ttf
+
 
 COPY package.xml ${JETBOT_ROOT}
 COPY setup.py ${JETBOT_ROOT}
@@ -43,8 +46,8 @@ RUN source ${ROS_ENVIRONMENT_INSTALL} && \
 # setup entrypoint
 #
 
-RUN echo 'source ${WORKSPACE_ROOT}/install/setup.bash' >> /root/.bashrc && \
-    echo 'source ${WORKSPACE_ROOT}/install/local_setup.bash' >> /root/.bashrc
+RUN sudo echo 'source ${WORKSPACE_ROOT}/install/setup.bash' >> /root/.bashrc && \
+    sudo echo 'source ${WORKSPACE_ROOT}/install/local_setup.bash' >> /root/.bashrc
 
 
 CMD ["bash"]
