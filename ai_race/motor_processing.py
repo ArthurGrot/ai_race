@@ -92,7 +92,7 @@ class MotorProcessing(Node):
        
         
         if self.remote_mode.data == False:
-            node.get_logger().info(f"{self.yolo_yolo_avoidance_mode}")
+            self.get_logger().info(f"{self.yolo_avoidance_mode}")
             self.publisher()
 
 def main(args=None):
