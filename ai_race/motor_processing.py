@@ -8,12 +8,12 @@ class MotorProcessing(Node):
         super().__init__('motor_processing')
         # Data from Twists
             # yolo speed
-        self.yolo_speed = 0.4 # speed 30 
+        self.yolo_speed = 0.35 # speed 30 
         self.yolo_angle = 0.0 
             # remote
         self.remote_mode = Bool()
         self.remote_mode.data = True
-
+     
         self.remote_speed = 0.0
         self.remote_angle = 0.0
             # line
@@ -92,7 +92,7 @@ class MotorProcessing(Node):
        
         
         if self.remote_mode.data == False:
-            self.get_logger().info(f"{self.yolo_avoidance_mode}")
+            self.get_logger().info(f"Motor Processing | Avoidance_mode = {self.yolo_avoidance_mode}")
             self.publisher()
 
 def main(args=None):
