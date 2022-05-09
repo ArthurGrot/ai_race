@@ -8,6 +8,7 @@ from geometry_msgs.msg import Twist
 from threading import Thread, Event
 import torch
 import math
+import time
 
 event = Event()
 image_subscriber_yolo = None
@@ -40,24 +41,11 @@ class ImageSubscriberYolo(Node):
         
         self.model = torch.hub.load('/workspace/src/ai_race/ai_race/yolov5/', 'custom', path='/workspace/src/ai_race/ai_race/models/best.pt', source='local', force_reload=True) # local repo
         self.model.cuda()
+        self.get_logger().info(f"Model finished loading")
         
         # parameters for distance estimation
         self.focal_length = 0.315
         self.michael_count = 0
-
-            # reference images
-        #michael_ref = cv2.imread("PATH TO MICHAEL REF IMAGE")
-        #nicole_ref = cv2.imread("PATH TO NICOLE REF IMAGE")
-        #lena_ref = cv2.imread("PATH TO LENA REF IMAGE")
-        #anna_ref = cv2.imread("PATH TO ANNA REF IMAGE")
-        #    # reference results
-        #michael_res = self.model(michael_ref,size=640)
-        #nicole_res = self.model(nicole_ref,size=640)
-        #lena_res = self.model(lena_ref,size=640)
-        #anna_res = self.model(anna_ref,size=640)
-        #    # reference widths
-        #
-        #obj = michael_res.pandas().xyxy[0].at(0)
 
 
         #example for subscription 
@@ -74,7 +62,8 @@ class ImageSubscriberYolo(Node):
         # yolo speed publisher
         self.speed_pub = self.create_publisher(Twist, 'speed_yolo', 1)
 
-        self.speed = 0.4
+        self.speed = 0.35
+        self.block_messages = False
 
     
 
@@ -83,8 +72,6 @@ class ImageSubscriberYolo(Node):
         self.cv_image = self.br.imgmsg_to_cv2(data, desired_encoding="passthrough")
         yolo_data = self.get_data(self.cv_image)
         self.motor_twist = Twist()
-        # speed control yolo check
-        self.motor_twist.linear.y = 1.0
         # steering control yolo check
         self.motor_twist.linear.z = 0.0
         # indecees
@@ -92,59 +79,71 @@ class ImageSubscriberYolo(Node):
         michael_in_data = False
 
         for obj in yolo_data:
-            if obj[6] > 0.7: # confidence greater than ...
+            if (obj[6] > 0.85 and not self.block_messages): # confidence greater than ...
                 # Speed params
                 if obj[0] == "Speed 30":    # speed 30 detected
-                    self.speed = 0.4
+                    self.speed = 0.30
                 elif obj[0] == "Speed 50":   # speed 50 detected
-                    self.speed = 0.55
-                elif obj[0] == "Michael":
+                    self.speed = 0.4
+                elif obj[0] == "Michael":   # Michael detected
                     self.motor_twist = self.figurine_detected(obj)
-                    michael_in_data = True
-                    if(self.michael_count >= 3):
-                        # deactivates line following
-                        self.motor_twist.linear.z = 1.0
-                        self.michael_count = 3
-                    else:
-                        self.motor_twist.linear.z = 0.0
-                        
-                else:
-                    # change this later when more figurines are being tested
-                    michael_in_data = (michael_in_data or False)
-                self.get_logger().info(f"YOLO | Detected: {obj[0]} with Conf {obj[6]} at ({obj[1]},{obj[2]}) {obj[5]}cm away")
+                    if self.motor_twist.angular.z != 0.0:
+                        self.start_avoidance(obj)
+            self.get_logger().info(f"YOLO | Detected: {obj[0]} with Conf {obj[6]} at ({obj[1]},{obj[2]}) {obj[5]}cm away")
 
 
-        if(self.michael_count != 0 & (not michael_in_data)):
-            # turnback
-            self.motor_twist.angular.z = (self.motor_twist.angular.z * (-1.0))
-            self.michael_count -= 1
-        elif(self.michael_count == 0):
-            self.motor_twist.angular.z = 0.0
 
         self.motor_twist.linear.x = self.speed
         self.speed_pub.publish(self.motor_twist)
-        # differentiate between speed and playmobil
+
+
+    def start_avoidance(self, obj):
+        self.block_messages = True
+        self.motor_twist.linear.z = 1.0
+        self.motor_twist.linear.x = self.speed
+        self.get_logger().info(f"YOLO | Avoid")
+        # avoid
+        self.speed_pub.publish(self.motor_twist)
+        time.sleep(1)
+        #return
+        self.get_logger().info(f"YOLO | Return")
+        self.motor_twist.angular.z = self.motor_twist.angular.z * (-1.0)
+        self.speed_pub.publish(self.motor_twist)
+        time.sleep(1)
+        # reset
+        self.get_logger().info(f"YOLO | Reset")
+        self.motor_twist.linear.z = 0.0
+        self.motor_twist.angular.z = 0.0
+        self.speed_pub.publish(self.motor_twist)
+        
+        self.block_messages = False
+
+
+
+
+
 
     def figurine_detected(self, obj): 
         """ 
-        does the required calculations for whether or not the vehicle has to act, depending on where the object is in the image (center of mass)
+        does the required calculations for whether or not the vehicle has to act, depending on where the object is in the image (center of mass) -> now goes by lowest point in image
         """
         # calculate center of mass (x,y)
-        center_of_mass = (round( obj[1] + (obj[3]/2) ), round( obj[2] + (obj[4]/2) ))
+        
+        # center_of_mass = (round( obj[1] + (obj[3]/2) ), round( obj[2] + (obj[4]/2) ))
+        # go from bottom of figurine instead of actual center of mass
+        center_of_mass = (obj[1] + (obj[3]/2),obj[2] + obj[4])
         x_quadrant = math.floor(center_of_mass[0]/160)
         y_quadrant = math.floor(center_of_mass[1]/160)
-        self.get_logger().info(f"YOLO | {center_of_mass[0]/160}, {center_of_mass[1]/240}")
+
+        self.get_logger().info(f"YOLO | {center_of_mass[0]/160}, {center_of_mass[1]/160} -> x={x_quadrant}, y={y_quadrant}")
         twist = Twist()
-        if(obj[0] == "Michael") :
-            self.michael_count += 1
         # decide based upon the segmented zones in the image
         # zones =   0-159,0-159   | 159-320, 0-159   | 321-480, 0-159 
         #           0-159,159-320 | 159-320, 159-320 | 321-480, 159-320
         #           0-159,321-480 | 159-320, 321-480 | 321-480, 321-480 
         if(y_quadrant == 0 & x_quadrant == 1):
-            # Do nothing yet needs to be seen if necessary
-            return
-        if(y_quadrant == 1 & x_quadrant == 1):
+            twist.angular.z = -1.0
+        elif(y_quadrant == 1 & x_quadrant == 1):
                 twist.angular.z = -1.0
         elif(y_quadrant == 2):
             if(x_quadrant == 0):
@@ -190,10 +189,6 @@ class ImageSubscriberYolo(Node):
 
         return objects_in_frame
 
-
-    def distance_finder(self, realObjectWidth, objectWidthInFrame):
-        distance = ((realObjectWidth * self.focal_length)/objectWidthInFrame)*100
-        return distance
 
 
 
