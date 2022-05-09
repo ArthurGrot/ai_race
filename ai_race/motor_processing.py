@@ -2,6 +2,7 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Bool
+import time, threading
 
 class MotorProcessing(Node):
     def __init__(self):
@@ -35,7 +36,12 @@ class MotorProcessing(Node):
         
         # publisher
         self.pub = self.create_publisher(Twist, 'velocity', 1)
+        self.foo()
 
+
+    def foo(self):
+        self.publisher()
+        threading.Timer(10, self.foo).start()
 
     def remote_mode_callback(self, msg):
         self.remote_mode.data = msg.data
@@ -72,8 +78,6 @@ class MotorProcessing(Node):
     def steering_line(self,msg):
         self.line_angle = msg.angular.z
 
-        if self.remote_mode.data == False:
-            self.publisher()
             
         # remote
     def steering_remote(self, msg):
@@ -93,7 +97,6 @@ class MotorProcessing(Node):
         
         if self.remote_mode.data == False:
             self.get_logger().info(f"Motor Processing | Avoidance_mode = {self.yolo_avoidance_mode}")
-            self.publisher()
 
 def main(args=None):
     rclpy.init(args=args)
