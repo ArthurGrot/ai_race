@@ -37,21 +37,11 @@ class TeleopGamepad(Node):
         velocity.angular.y = 0.0
         velocity.angular.z = round(j.get_axis(2), 2) * -1.0 #Right thumbstick X     
         
-        #self.get_logger().info(f"Throttle: {velocity.linear.x}")
-        #self.get_logger().info(f"Steering: {velocity.linear.y}") 
-        
         self.pub_velocity.publish(velocity)
 
 
         for event in pygame.event.get(): 
             if event.type == pygame.JOYBUTTONDOWN:
-                # buttons = j.get_numbuttons()
-                # self.get_logger().info("Number of buttons: {}".format(buttons))
-
-                # for i in range(buttons):
-                #     button = j.get_button(i)
-                #     self.get_logger().info("Button {:>2} value: {}".format(i, button))
-
                 button = j.get_button(11)
 
                 if button == True:

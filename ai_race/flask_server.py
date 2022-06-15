@@ -28,26 +28,9 @@ class ImageSubscriber(Node):
         self.frame = None
 
     def listener_callback(self, data):
-        #self.get_logger().info('Receiving video frame')
         cv_image = self.br.imgmsg_to_cv2(data, desired_encoding="passthrough")
-
         self.frame = cv2.imencode(".jpg", cv_image)[1].tobytes()
-        #cv2.imwrite(f"/pictures/{self.i}.jpg", cv_image)
-        #self.i = self.i + 1
-        # if self.frame is None:
-        #   self.get_logger().info('none')
-        # else:
-        #   self.get_logger().info(f"{type(self.frame)}")
-
         event.set()
-
-        # # Convert ROS Image message to OpenCV image
-        # current_frame = self.br.imgmsg_to_cv2(data)
-
-        # # Display image
-        # cv2.imshow("camera", current_frame)
-
-        # cv2.waitKey(1)
 
 
 def get_frame():
