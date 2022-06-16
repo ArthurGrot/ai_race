@@ -50,7 +50,6 @@ class MotorProcessing(Node):
     # publisher motor
     def publisher(self):
         publish_value = self.decision_maker()
-        self.get_logger().info(f"test")
         self.pub.publish(publish_value)
 
     def decision_maker(self):
