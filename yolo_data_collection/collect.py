@@ -12,7 +12,7 @@ class ImageCollector():
 
     def __init__(self):
         self.cap = cv2.VideoCapture(self._gst_str(), cv2.CAP_GSTREAMER)
-        path = '/home/jetson/ai_race/yolo_data_collection'
+        path = '/home/jetson/ai_race/yolo_data_collection/collected_images'
         while self.cap.isOpened():
                 ret, frame = self.cap.read()
                 if ret == True:
