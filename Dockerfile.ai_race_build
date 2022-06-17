@@ -4,7 +4,6 @@ FROM ${BASE_IMAGE}
 SHELL ["/bin/bash", "-c"] 
 ENV SHELL /bin/bash
 
-# RUN useradd -ms /bin/bash aiuser
 RUN mkdir /home/root
 #
 # environment setup
@@ -34,7 +33,7 @@ COPY addons/Arial.ttf /home/root/.config/Ultralytics/Arial.ttf
 COPY package.xml ${JETBOT_ROOT}
 COPY setup.py ${JETBOT_ROOT}
 COPY setup.cfg ${JETBOT_ROOT}
-    
+
 COPY jetracer.sh ${WORKSPACE_ROOT}
 COPY jetbot.sh ${WORKSPACE_ROOT}
 

@@ -17,11 +17,11 @@ manually build development image:
 
 for jetbot remote controlling:
 
-    ros2 launch ai_race launch_jetbot.launch.py
+    ros2 launch ai_race jetbot_1.launch.py
 
-for jetracer remote controlling (launching jetracer takes longer than jetbot): 
+for jetracer remote controlling: 
 
-    ros2 launch ai_race launch_jetracer.launch.py
+    ros2 launch ai_race jetracer_1.launch.py
     
 calibration in a new bash (WARNING! Calibration has to be redone after restart):
 
@@ -35,23 +35,7 @@ for jetracer speed:
 
 connect to container in new terminal:
 
-    sudo docker ps
-    sudo docker exec -it NAME bash
-
-
-https://github.com/NVIDIA-AI-IOT/ros2_torch_trt/tree/master/docker
-
-https://forums.developer.nvidia.com/t/pytorch-for-jetson-version-1-10-now-available/72048
-
-https://stackoverflow.com/questions/59691207/docker-build-with-nvidia-runtime/61737404#61737404
-
-cp /workspace/build/ai_race/ai_race/road_following_model30a.pth /workspace/install/ai_race/lib/ai_race/road_following_model30a.pth
-
-ros2 launch ai_race jetracer_line_following.launch.py
-
-https://www.seeedstudio.com/blog/2020/07/09/monitor-gpu-cpu-and-other-stats-on-jetson-nano-xavier-nx-tx1-tx2/
-https://askubuntu.com/questions/114997/how-where-do-i-check-my-ubuntu-laptopss-cpu-usage
-
+    sudo docker exec -it ai_race bash
 
 
 # Docker ROS Communication across Nanos
