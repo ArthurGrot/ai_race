@@ -37,7 +37,6 @@ class ImageSubscriberYolo(Node):
 
     def __init__(self):
         super().__init__('image_subscriber_yolo')
-        # '/workspace/src/ai_race/ai_race/models/road_following_model30a.pth'
         
         self.model = torch.hub.load('/workspace/src/ai_race/ai_race/yolov5/', 'custom', path='/workspace/src/ai_race/ai_race/models/best.pt', source='local', force_reload=True) # local repo
         self.model.cuda()
@@ -52,11 +51,6 @@ class ImageSubscriberYolo(Node):
         self.subscription_cam = self.create_subscription(Image, 'video_frames_480', self.listener_callback_yolo, 5)
         self.subscription_cam
 
-        # uncomment when clear how to handle the publishing
-        # self.subscription_line = self.create_subscription(Image, 'line_follower', self.listener_callback_line, 1)
-        # self.subscription_line
-
-        #self.i = 0
         self.br = CvBridge()
         self.frame = None
         # yolo speed publisher
@@ -76,7 +70,6 @@ class ImageSubscriberYolo(Node):
         self.motor_twist.linear.z = 0.0
         # indecees
         # (name, xmin, ymin, object_width, object_height, distance, conf)
-        michael_in_data = False
 
         for obj in yolo_data:
             if (obj[6] > 0.85 and not self.block_messages): # confidence greater than ...
@@ -90,8 +83,6 @@ class ImageSubscriberYolo(Node):
                     if self.motor_twist.angular.z != 0.0:
                         self.start_avoidance(obj)
             self.get_logger().info(f"YOLO | Detected: {obj[0]} with Conf {obj[6]} at ({obj[1]},{obj[2]}) {obj[5]}cm away")
-
-
 
         self.motor_twist.linear.x = self.speed
         self.speed_pub.publish(self.motor_twist)
@@ -117,10 +108,6 @@ class ImageSubscriberYolo(Node):
         self.speed_pub.publish(self.motor_twist)
         
         self.block_messages = False
-
-
-
-
 
 
     def figurine_detected(self, obj): 
@@ -181,7 +168,7 @@ class ImageSubscriberYolo(Node):
             object_width = ((xmax - xmin)/480)
             object_height = ((ymax - ymin)/480)
 
-            distance =  0 #self.distance_finder() # add once necessary # turns out that it isnt necessary yet
+            distance =  0 #self.distance_finder() # due to the fish eye effect of the lense not viable
 
 
             detected_object = (name, xmin, ymin, object_width, object_height, distance, conf)
